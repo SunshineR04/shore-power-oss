@@ -1,0 +1,64 @@
+# ============================================
+# 岸电码头运维系统 - Git 忽略规则
+# ============================================
+
+# === Environment files (关键: 永不提交真实 .env) ===
+.env
+.env.local
+.env.*.local
+
+# === 临时文件 ===
+temp_docx_text.txt
+
+# === 运行时上传目录 ===
+.uploads/
+
+# === 运行时数据 / 数据库 ===
+data/
+backend/data/
+*.mv.db
+*.trace.db
+
+# === 后端 (Java / Maven / Spring Boot) ===
+backend/target/
+backend/.idea/
+backend/build_out.txt
+backend/*.log
+backend/startup_stderr.log
+backend/startup_stdout.log
+backend/startup.log
+backend/hs_err_pid*.log
+
+# === 前端 (Node.js / Vite / Vue) ===
+frontend/node_modules/
+frontend/dist/
+frontend/.vscode/
+
+# === 本地开发工具链 (不提交! 占 400+MB) ===
+tools/
+
+# === 操作系统 / 编辑器临时文件 ===
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+~$*
+.~*
+
+# === IDE / 编辑器 ===
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# === AI 工具配置 ===
+.reasonix/
+
+# === 日志与构建产物 (通用兜底) ===
+*.log
+logs/
+target/
+build/
+out/
+dist/

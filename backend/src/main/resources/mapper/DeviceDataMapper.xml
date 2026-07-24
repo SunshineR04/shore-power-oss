@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorepower.mapper.DeviceDataMapper">
+
+    <select id="getDeviceAvg24h" resultType="map">
+        SELECT device_id, AVG(voltage) as avgVoltage, AVG(current_val) as avgCurrent,
+               AVG(power) as avgPower, AVG(temperature) as avgTemperature
+        FROM device_data
+        WHERE device_id = #{deviceId}
+          AND collect_time >= NOW() - INTERVAL 24 HOUR
+        GROUP BY device_id
+    </select>
+
+    <select id="getDeviceTrend" resultType="map">
+        SELECT
+        <choose>
+            <when test="hours == 1">
+                DATE_FORMAT(collect_time, '%Y-%m-%d %H:%i:00') as period,
+            </when>
+            <when test="hours &lt;= 6">
+                DATE_ADD(DATE_FORMAT(collect_time,'%Y-%m-%d %H:00:00'), INTERVAL FLOOR(MINUTE(collect_time)/5)*5 MINUTE) as period,
+            </when>
+            <otherwise>
+                DATE_ADD(DATE_FORMAT(collect_time,'%Y-%m-%d %H:00:00'), INTERVAL IF(MINUTE(collect_time)&lt;30,0,30) MINUTE) as period,
+            </otherwise>
+        </choose>
+               AVG(voltage) as voltage, AVG(current_val) as currentVal,
+               AVG(power) as power, AVG(temperature) as temperature,
+               AVG(power_factor) as powerFactor
+        FROM device_data
+        WHERE device_id = #{deviceId}
+          AND collect_time >= NOW() - INTERVAL #{hours} HOUR
+        GROUP BY period
+        ORDER BY period
+    </select>
+
+    <select id="getLatestAllDevices" resultType="map">
+        SELECT d.device_id AS deviceId,
+               d.voltage, d.current_val AS currentVal, d.power, d.temperature,
+               d.power_factor AS powerFactor, d.frequency,
+               d.energy_consumption AS energyConsumption, d.energy_cost AS energyCost,
+               DATE_FORMAT(d.collect_time, '%Y-%m-%d %H:%i:%s') AS collectTime, d.humidity
+        FROM device_data d
+                 INNER JOIN (
+            SELECT device_id, MAX(collect_time) AS max_time
+            FROM device_data GROUP BY device_id
+        ) latest ON d.device_id = latest.device_id AND d.collect_time = latest.max_time
+    </select>
+
+    <delete id="deleteOlderThanDays">
+        DELETE FROM device_data
+        WHERE collect_time &lt; NOW() - INTERVAL #{days} DAY
+    </delete>
+
+</mapper>

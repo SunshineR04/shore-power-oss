@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorepower.mapper.ReservationMapper">
+
+    <select id="getUserReservations" resultType="map">
+        SELECT r.id,
+               r.user_id      AS userId,
+               r.device_id    AS deviceId,
+               r.ship_id      AS shipId,
+               r.reservation_no AS reservationNo,
+               DATE_FORMAT(r.start_time, '%Y-%m-%d %H:%i:%s') AS startTime,
+               DATE_FORMAT(r.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+               r.status,
+               r.estimated_cost AS estimatedCost,
+               r.actual_cost  AS actualCost,
+               DATE_FORMAT(r.create_time, '%Y-%m-%d %H:%i:%s') AS createTime,
+               DATE_FORMAT(r.update_time, '%Y-%m-%d %H:%i:%s') AS updateTime,
+               d.device_name  AS deviceName,
+               d.device_code  AS deviceCode,
+               d.location,
+               s.ship_name    AS shipName,
+               DATE_FORMAT(u.start_time, '%Y-%m-%d %H:%i:%s') AS usageStartTime,
+               DATE_FORMAT(u.end_time, '%Y-%m-%d %H:%i:%s') AS usageEndTime
+        FROM reservation r
+                 LEFT JOIN device d ON r.device_id = d.id
+                 LEFT JOIN ship s ON r.ship_id = s.id
+                 LEFT JOIN usage_record u ON r.id = u.reservation_id
+        WHERE r.user_id = #{userId}
+        ORDER BY r.create_time DESC
+    </select>
+
+    <select id="getReservationDetail" resultType="map">
+        SELECT r.id,
+               r.user_id      AS userId,
+               r.device_id    AS deviceId,
+               r.ship_id      AS shipId,
+               r.reservation_no AS reservationNo,
+               DATE_FORMAT(r.start_time, '%Y-%m-%d %H:%i:%s') AS startTime,
+               DATE_FORMAT(r.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+               r.status,
+               r.estimated_cost AS estimatedCost,
+               r.actual_cost  AS actualCost,
+               DATE_FORMAT(r.create_time, '%Y-%m-%d %H:%i:%s') AS createTime,
+               DATE_FORMAT(r.update_time, '%Y-%m-%d %H:%i:%s') AS updateTime,
+               d.device_name  AS deviceName,
+               d.device_code  AS deviceCode,
+               d.location,
+               s.ship_name    AS shipName,
+               DATE_FORMAT(u.start_time, '%Y-%m-%d %H:%i:%s') AS usageStartTime,
+               DATE_FORMAT(u.end_time, '%Y-%m-%d %H:%i:%s') AS usageEndTime
+        FROM reservation r
+                 LEFT JOIN device d ON r.device_id = d.id
+                 LEFT JOIN ship s ON r.ship_id = s.id
+                 LEFT JOIN usage_record u ON r.id = u.reservation_id
+        WHERE r.id = #{id}
+    </select>
+
+    <select id="countConflict" resultType="long">
+        SELECT COUNT(*)
+        FROM reservation
+        WHERE device_id = #{deviceId}
+          AND user_id != #{userId}
+          AND status IN ('PENDING', 'CONFIRMED', 'IN_USE', 'PENDING_PAYMENT')
+          AND start_time &lt; #{endTime}
+          AND end_time &gt; #{startTime}
+    </select>
+
+    <select id="countUserActiveReservations" resultType="long">
+        SELECT COUNT(*)
+        FROM reservation
+        WHERE device_id = #{deviceId}
+          AND user_id = #{userId}
+          AND status IN ('PENDING', 'CONFIRMED', 'IN_USE', 'PENDING_PAYMENT')
+    </select>
+
+    <select id="findInUseDeviceIds" resultType="long">
+        SELECT DISTINCT device_id
+        FROM reservation
+        WHERE status = 'IN_USE'
+    </select>
+
+</mapper>

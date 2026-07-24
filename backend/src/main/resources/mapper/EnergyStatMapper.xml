@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorepower.mapper.EnergyStatMapper">
+
+    <select id="getEnergyTrend" resultType="map">
+        SELECT CAST(stat_date AS CHAR) AS statDate,
+               SUM(total_energy)       AS totalEnergy,
+               SUM(energy_cost)        AS totalCost
+        FROM energy_stat
+        WHERE stat_type = #{statType}
+          AND stat_date BETWEEN CAST(#{startDate} AS DATE) AND CAST(#{endDate} AS DATE)
+        GROUP BY stat_date
+        ORDER BY stat_date
+    </select>
+
+    <select id="getEnergyByDevice" resultType="map">
+        SELECT d.device_name   AS deviceName,
+               SUM(e.total_energy) AS totalEnergy,
+               SUM(e.energy_cost)  AS totalCost
+        FROM energy_stat e
+                 JOIN device d ON e.device_id = d.id
+        WHERE e.stat_type = 'DAILY'
+          AND e.stat_date BETWEEN CAST(#{startDate} AS DATE) AND CAST(#{endDate} AS DATE)
+        GROUP BY e.device_id, d.device_name
+        ORDER BY totalEnergy DESC
+    </select>
+
+    <select id="getComparisonTrend" resultType="map">
+        SELECT CAST(stat_date AS CHAR) AS statDate,
+               SUM(total_energy)       AS totalEnergy,
+               SUM(energy_cost)        AS totalCost
+        FROM energy_stat
+        WHERE stat_type = #{statType}
+          AND stat_date BETWEEN CAST(#{startDate} AS DATE) AND CAST(#{endDate} AS DATE)
+        GROUP BY stat_date
+        ORDER BY stat_date
+    </select>
+
+    <select id="getUsageRecordTrend" resultType="map">
+        <![CDATA[
+        SELECT DATE(end_time) AS statDate,
+               COALESCE(SUM(total_energy), 0) AS totalEnergy,
+               COALESCE(SUM(total_cost), 0)  AS totalCost
+        FROM usage_record
+        WHERE end_time >= CAST(#{startDate} AS DATE)
+          AND end_time < DATE_ADD(CAST(#{endDate} AS DATE), INTERVAL 1 DAY)
+        GROUP BY DATE(end_time)
+        ORDER BY statDate
+        ]]>
+    </select>
+
+    <select id="getUsageRecordByDevice" resultType="map">
+        <![CDATA[
+        SELECT d.device_name      AS deviceName,
+               COALESCE(SUM(u.total_energy), 0) AS totalEnergy,
+               COALESCE(SUM(u.total_cost), 0)   AS totalCost
+        FROM usage_record u
+                 JOIN device d ON d.id = u.device_id
+        WHERE u.end_time >= CAST(#{startDate} AS DATE)
+          AND u.end_time < DATE_ADD(CAST(#{endDate} AS DATE), INTERVAL 1 DAY)
+        GROUP BY u.device_id, d.device_name
+        ORDER BY totalEnergy DESC
+        ]]>
+    </select>
+
+    <select id="getTodayTrend" resultType="map">
+        SELECT CAST(CURDATE() AS CHAR) AS statDate,
+               COALESCE(SUM(total_energy), 0) AS totalEnergy,
+               COALESCE(SUM(total_cost), 0)  AS totalCost
+        FROM usage_record
+        WHERE end_time >= CURDATE()
+    </select>
+
+    <select id="getTodayByDevice" resultType="map">
+        SELECT d.device_name      AS deviceName,
+               COALESCE(SUM(u.total_energy), 0) AS totalEnergy,
+               COALESCE(SUM(u.total_cost), 0)   AS totalCost
+        FROM usage_record u
+                 JOIN device d ON d.id = u.device_id
+        WHERE u.end_time >= CURDATE()
+        GROUP BY u.device_id, d.device_name
+        ORDER BY totalEnergy DESC
+    </select>
+
+</mapper>
