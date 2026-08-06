@@ -1019,7 +1019,7 @@ onMounted(() => {
   gap: 8px;
   transition: all 0.25s ease;
   border: none !important;
-  background: linear-gradient(135deg, var(--primary), #16a34a) !important;
+  background: linear-gradient(135deg, var(--primary), #1d4ed8) !important;
   color: var(--bg-deep) !important;
 }
 

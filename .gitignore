@@ -77,3 +77,8 @@ dist/
 
 # === ZCode 本地计划/会话文件 ===
 .zcode/
+
+# 本地 UI 审查截图
+*.png
+*.jpeg
+!frontend/public/**

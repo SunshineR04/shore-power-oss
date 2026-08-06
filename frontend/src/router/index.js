@@ -61,12 +61,29 @@ const routes = [
       { path: 'operator/alarms',     component: () => import('../views/operator/alarms.vue'), meta: { roles: ['OPERATOR'], title: '告警处理' } },
       { path: 'operator/notifications', component: () => import('../views/operator/notifications.vue'), meta: { roles: ['OPERATOR'], title: '通知中心' } }
     ]
+  },
+  // 404 兜底：未匹配任意路由时展示错误页（未登录用户由守卫先送往 /login）
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../views/error/404.vue'),
+    meta: { title: '页面不存在' }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  /** 切页回到顶部；浏览器前进/后退时恢复原滚动位置 */
+  scrollBehavior(to, from, savedPosition) {
+    return savedPosition || { top: 0 }
+  }
+})
+
+/** 切页同步浏览器标签标题 */
+router.afterEach(to => {
+  const base = '长江岸电码头运维系统'
+  document.title = to.meta.title ? `${to.meta.title} · ${base}` : base
 })
 
 /**

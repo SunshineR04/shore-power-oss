@@ -4,15 +4,15 @@
       <div class="sidebar-head">
         <div class="brand-mark" :class="{ collapsed: isCollapse }">
           <div class="brand-mark__icon">
-            <el-icon :size="22" color="#22c55e"><Ship /></el-icon>
+            <el-icon :size="22" color="#2563eb"><Ship /></el-icon>
           </div>
           <transition name="fade">
             <span v-show="!isCollapse" class="brand-mark__text">岸电运维</span>
           </transition>
         </div>
       </div>
-      <el-menu :default-active="$route.path" router background-color="transparent" text-color="#8899b4"
-               active-text-color="#f1f5f9" :collapse="isCollapse" :collapse-transition="false"
+      <el-menu :default-active="$route.path" router background-color="transparent"
+               :collapse="isCollapse" :collapse-transition="false"
                class="sidebar-menu">
         <template v-if="store.isSuperAdmin()">
           <el-menu-item index="/dashboard" class="menu-item">
@@ -89,12 +89,14 @@
           </el-breadcrumb>
         </div>
         <div class="header-right">
-          <div v-if="store.isAdmin()" class="alarm-badge" @click="$router.push('/alarm')">
+          <div v-if="store.isAdmin()" class="alarm-badge" role="button" tabindex="0"
+               @click="$router.push('/alarm')" @keydown.enter="$router.push('/alarm')">
             <el-badge :value="pendingAlarms" :hidden="!pendingAlarms" :max="99">
               <el-icon :size="18"><Bell /></el-icon>
             </el-badge>
           </div>
-          <div v-if="store.isOperator()" class="alarm-badge" @click="$router.push('/operator/notifications')">
+          <div v-if="store.isOperator()" class="alarm-badge" role="button" tabindex="0"
+               @click="$router.push('/operator/notifications')" @keydown.enter="$router.push('/operator/notifications')">
             <el-badge :value="unreadNotifs" :hidden="!unreadNotifs" :max="99">
               <el-icon :size="18"><Message /></el-icon>
             </el-badge>
@@ -110,7 +112,7 @@
                   {{ store.isSuperAdmin() ? '管理员' : store.isOperator() ? '运维人员' : '普通用户' }}
                 </el-tag>
               </div>
-              <el-icon :size="14" color="#8d9db0"><ArrowDown /></el-icon>
+              <el-icon :size="14" color="var(--text-muted)"><ArrowDown /></el-icon>
             </div>
             <template #dropdown>
               <el-dropdown-menu>
@@ -207,7 +209,7 @@ const handleCmd = cmd => {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
 }
 
@@ -226,13 +228,13 @@ const handleCmd = cmd => {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(6, 182, 212, 0.08) 100%);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(14, 165, 233, 0.06) 100%);
+  border: 1px solid rgba(37, 99, 235, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.08);
 }
 
 .brand-mark__text {
@@ -271,7 +273,7 @@ const handleCmd = cmd => {
 }
 
 .menu-item.is-active {
-  background: rgba(34, 197, 94, 0.1) !important;
+  background: rgba(37, 99, 235, 0.08) !important;
   color: var(--primary) !important;
   position: relative;
   font-weight: 600;
@@ -287,7 +289,7 @@ const handleCmd = cmd => {
   height: 20px;
   background: var(--primary);
   border-radius: 0 2px 2px 0;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
 }
 
 .menu-item .el-icon {
@@ -298,7 +300,7 @@ const handleCmd = cmd => {
 .sidebar-foot {
   flex-shrink: 0;
   padding: 12px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border-light);
 }
 
 .sidebar-foot.collapsed {
@@ -319,7 +321,7 @@ const handleCmd = cmd => {
   height: 8px;
   border-radius: 50%;
   background: var(--primary);
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
   animation: pulse-dot 2s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -340,7 +342,7 @@ const handleCmd = cmd => {
   height: 2px;
   margin-top: 10px;
   border-radius: 1px;
-  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.4) 30%, rgba(6, 182, 212, 0.3) 70%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.3) 30%, rgba(14, 165, 233, 0.2) 70%, transparent);
 }
 
 .sidebar-foot.collapsed .cable-accent {
@@ -348,12 +350,12 @@ const handleCmd = cmd => {
   margin: 10px auto 0;
 }
 
-/* ====== 顶部 header（玻璃） ====== */
+/* ====== 顶部 header（浅色玻璃） ====== */
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(14, 21, 37, 0.72);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   border-bottom: 1px solid var(--header-border);
@@ -369,7 +371,7 @@ const handleCmd = cmd => {
   right: 0;
   bottom: -1px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.25) 50%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.18) 50%, transparent);
 }
 
 .header-left {

@@ -1,0 +1,25 @@
+# 统一仓库内文本文件为 LF（Windows 检出时自动转 CRLF），
+# 避免行尾符差异污染每次 diff
+* text=auto
+
+*.java text eol=lf
+*.vue   text eol=lf
+*.js    text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf
+*.xml   text eol=lf
+*.sql   text eol=lf
+*.sh    text eol=lf
+*.properties text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary

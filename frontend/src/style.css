@@ -5,75 +5,77 @@
 }
 
 :root {
-  /* ====== 核心品牌色 — 电光绿 ====== */
-  --primary: #22c55e;
-  --primary-light: #4ade80;
-  --primary-dark: #16a34a;
-  --primary-bg: rgba(34, 197, 94, 0.1);
-  --primary-bg-hover: rgba(34, 197, 94, 0.15);
+  /* ====== 核心品牌色 — 清爽蓝 ====== */
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --primary-bg: rgba(37, 99, 235, 0.08);
+  --primary-bg-hover: rgba(37, 99, 235, 0.14);
 
   /* ====== 功能色 ====== */
-  --accent: #06b6d4;
-  --accent-light: #22d3ee;
-  --accent-bg: rgba(6, 182, 212, 0.1);
-  --warning: #f59e0b;
-  --warning-light: #fbbf24;
-  --warning-bg: rgba(245, 158, 11, 0.1);
-  --danger: #ef4444;
-  --danger-light: #f87171;
-  --danger-bg: rgba(239, 68, 68, 0.1);
-  --success: #22c55e;
+  --accent: #0ea5e9;
+  --accent-light: #38bdf8;
+  --accent-bg: rgba(14, 165, 233, 0.08);
+  --warning: #d97706;
+  --warning-light: #f59e0b;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --danger: #dc2626;
+  --danger-light: #ef4444;
+  --danger-bg: rgba(220, 38, 38, 0.08);
+  --success: #16a34a;
+  --success-light: #22c55e;
+  --success-bg: rgba(22, 163, 74, 0.08);
   --info: #64748b;
   --info-light: #94a3b8;
-  --info-bg: rgba(100, 116, 139, 0.1);
+  --info-bg: rgba(100, 116, 139, 0.08);
 
   /* ====== 中性色 ====== */
-  --white: #f1f5f9;
-  --black: #000000;
+  --white: #ffffff;
+  --black: #0f172a;
 
-  /* ====== 暗色背景系统 ====== */
-  --bg-deepest: #060a13;
-  --bg-deep: #0a0f1a;
-  --bg-main: #0e1525;
-  --bg-card: #141c2e;
-  --bg-card-hover: #1a2540;
-  --bg-elevated: #1e293b;
-  --bg-hover: rgba(255, 255, 255, 0.04);
-  --bg-overlay: rgba(6, 10, 19, 0.8);
+  /* ====== 浅色背景系统（极简企业运营） ====== */
+  --bg-deepest: #eef2f7;
+  --bg-deep: #f8fafc;
+  --bg-main: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-elevated: #f8fafc;
+  --bg-hover: rgba(15, 23, 42, 0.04);
+  --bg-overlay: rgba(15, 23, 42, 0.45);
 
-  /* ====== 侧边栏 ====== */
-  --sidebar-bg: #080d16;
-  --sidebar-bg-end: #0c1220;
-  --sidebar-text: #64748b;
-  --sidebar-text-active: #f1f5f9;
-  --sidebar-hover: rgba(34, 197, 94, 0.06);
-  --sidebar-active-indicator: #22c55e;
+  /* ====== 侧边栏（浅色） ====== */
+  --sidebar-bg: #ffffff;
+  --sidebar-bg-end: #ffffff;
+  --sidebar-text: #475569;
+  --sidebar-text-active: #1d4ed8;
+  --sidebar-hover: rgba(37, 99, 235, 0.06);
+  --sidebar-active-indicator: #2563eb;
 
   /* ====== 顶部导航 ====== */
-  --header-bg: #0e1525;
-  --header-border: #1e293b;
+  --header-bg: #ffffff;
+  --header-border: #e2e8f0;
 
   /* ====== 文字色 ====== */
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
   --text-muted: #64748b;
-  --text-placeholder: #475569;
-  --text-inverse: #0e1525;
+  --text-placeholder: #94a3b8;
+  --text-inverse: #ffffff;
 
   /* ====== 边框色 ====== */
-  --border-color: #1e293b;
-  --border-light: #1a2236;
-  --border-hover: #334155;
+  --border-color: #e2e8f0;
+  --border-light: #eef2f7;
+  --border-hover: #cbd5e1;
 
-  /* ====== 阴影系统 ====== */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.25);
-  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.15);
-  --shadow-glow-accent: 0 0 20px rgba(6, 182, 212, 0.15);
-  --shadow-glow-warning: 0 0 20px rgba(245, 158, 11, 0.15);
-  --shadow-glow-danger: 0 0 20px rgba(239, 68, 68, 0.15);
+  /* ====== 阴影系统（浅色柔和投影） ====== */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.1), 0 2px 6px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 24px 64px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.12);
+  --shadow-glow-accent: 0 0 20px rgba(14, 165, 233, 0.12);
+  --shadow-glow-warning: 0 0 20px rgba(217, 119, 6, 0.12);
+  --shadow-glow-danger: 0 0 20px rgba(220, 38, 38, 0.12);
 
   /* ====== 圆角系统 ====== */
   --radius-xs: 4px;
@@ -84,9 +86,27 @@
   --radius-full: 9999px;
 
   /* ====== 字体系统 ====== */
-  --font-display: 'Fira Sans', sans-serif;
-  --font-body: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', monospace;
+  --font-display: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', Consolas, monospace;
+
+  /* ====== 字号刻度 ====== */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 13px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 26px;
+  --font-size-3xl: 32px;
+
+  /* ====== 图表语义色（与主色板统一） ====== */
+  --chart-1: #2563eb;   /* 蓝 */
+  --chart-2: #0ea5e9;   /* 天蓝 */
+  --chart-3: #10b981;   /* 绿 */
+  --chart-4: #f59e0b;   /* 琥珀 */
+  --chart-5: #ef4444;   /* 红 */
+  --chart-6: #8b5cf6;   /* 紫 */
 
   /* ====== 过渡动画 ====== */
   --transition-fast: 0.15s ease;
@@ -101,6 +121,34 @@
   --space-lg: 24px;
   --space-xl: 32px;
   --space-2xl: 48px;
+
+  /* ====== Element Plus 主题对齐 ====== */
+  --el-color-primary: #2563eb;
+  --el-color-primary-light-3: #5b8def;
+  --el-color-primary-light-5: #93b4f4;
+  --el-color-primary-light-7: #c2d3f8;
+  --el-color-primary-light-8: #d9e4fb;
+  --el-color-primary-light-9: #ecf2fe;
+  --el-color-primary-dark-2: #1e4fbc;
+  --el-color-success: #16a34a;
+  --el-color-warning: #d97706;
+  --el-color-danger: #dc2626;
+  --el-color-error: #dc2626;
+  --el-color-info: #64748b;
+  --el-text-color-primary: #0f172a;
+  --el-text-color-regular: #475569;
+  --el-text-color-secondary: #64748b;
+  --el-text-color-placeholder: #94a3b8;
+  --el-border-color: #e2e8f0;
+  --el-border-color-light: #eef2f7;
+  --el-border-color-lighter: #f1f5f9;
+  --el-fill-color-blank: #ffffff;
+  --el-bg-color: #ffffff;
+  --el-bg-color-page: #f8fafc;
+  --el-bg-color-overlay: #ffffff;
+  --el-border-radius-base: 8px;
+  --el-border-radius-small: 6px;
+  --el-font-size-base: 13px;
 }
 
 html, body, #app {
@@ -174,8 +222,8 @@ h1, h2, h3, h4, h5, h6 {
 .el-table {
   --el-table-bg-color: var(--bg-card);
   --el-table-tr-bg-color: var(--bg-card);
-  --el-table-header-bg-color: rgba(255, 255, 255, 0.03);
-  --el-table-row-hover-bg-color: rgba(34, 197, 94, 0.06);
+  --el-table-header-bg-color: rgba(15, 23, 42, 0.035);
+  --el-table-row-hover-bg-color: rgba(37, 99, 235, 0.05);
   --el-table-border-color: var(--border-light);
   --el-table-text-color: var(--text-secondary);
   --el-table-header-text-color: var(--text-muted);
@@ -185,7 +233,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .el-table th.el-table__cell {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: rgba(15, 23, 42, 0.035) !important;
   color: var(--text-muted) !important;
   font-weight: 600 !important;
   font-size: 11px !important;
@@ -196,7 +244,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .el-table .el-table__row:hover > td {
-  background: rgba(34, 197, 94, 0.06) !important;
+  background: rgba(37, 99, 235, 0.05) !important;
 }
 
 .el-table td.el-table__cell {
@@ -204,7 +252,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(15, 23, 42, 0.02);
 }
 
 .el-table__empty-text {
@@ -230,7 +278,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .el-button--primary:hover {
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
   transform: translateY(-1px);
 }
 
@@ -405,7 +453,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .el-overlay {
-  background: rgba(6, 10, 19, 0.75) !important;
+  background: rgba(15, 23, 42, 0.45) !important;
   backdrop-filter: blur(4px);
 }
 
@@ -429,7 +477,7 @@ h1, h2, h3, h4, h5, h6 {
 .el-pagination .el-pager li.is-active {
   background: var(--primary) !important;
   color: #fff !important;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }
 
 /* Form */
@@ -712,7 +760,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Loading */
 .el-loading-mask {
-  background: rgba(6, 10, 19, 0.7) !important;
+  background: rgba(248, 250, 252, 0.75) !important;
 }
 
 .el-loading-spinner .circular .path {
@@ -950,7 +998,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .data-value--glow {
-  text-shadow: 0 0 8px currentColor;
+  text-shadow: 0 0 10px rgba(37, 99, 235, 0.25);
 }
 
 /* ====== 页面头部统一样式 ====== */
@@ -986,7 +1034,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.02) 0%, transparent 50%);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -1039,7 +1087,7 @@ h1, h2, h3, h4, h5, h6 {
   right: 0;
   width: 80px;
   height: 80px;
-  background: radial-gradient(circle at top right, rgba(34, 197, 94, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.05) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -1082,7 +1130,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
   line-height: 1.2;
   letter-spacing: -0.02em;
-  text-shadow: 0 0 20px rgba(241, 245, 249, 0.1);
+  text-shadow: 0 0 20px rgba(15, 23, 42, 0.06);
 }
 
 .stat-card__sub {
@@ -1155,7 +1203,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .status-dot--online {
   background: var(--primary);
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.35);
 }
 
 .status-dot--offline {
@@ -1164,13 +1212,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .status-dot--fault {
   background: var(--danger);
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.35);
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
 .status-dot--warning {
   background: var(--warning);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 8px rgba(217, 119, 6, 0.35);
 }
 
 /* ====== WebSocket 状态指示器 ====== */
@@ -1219,8 +1267,8 @@ h1, h2, h3, h4, h5, h6 {
     0deg,
     transparent,
     transparent 2px,
-    rgba(255, 255, 255, 0.01) 2px,
-    rgba(255, 255, 255, 0.01) 4px
+    rgba(15, 23, 42, 0.015) 2px,
+    rgba(15, 23, 42, 0.015) 4px
   );
   pointer-events: none;
   z-index: 0;
