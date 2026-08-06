@@ -118,6 +118,7 @@ defineOptions({ name: 'UserDevices' })
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { deviceApi, reservationApi, shipApi } from '../../api'
+import { DEVICE_STATUS, statusMeta } from '../../utils/status'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
@@ -285,15 +286,8 @@ const formatSlotRange = () => {
   return startDate + ' ' + startTime + ' 至 ' + endDate + ' ' + endTime
 }
 
-const getStatusType = (status) => {
-  const map = { ONLINE: 'success', OFFLINE: 'info', FAULT: 'danger', MAINTENANCE: 'warning', IN_USE: 'primary' }
-  return map[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const map = { ONLINE: '在线可用', OFFLINE: '离线', FAULT: '故障', MAINTENANCE: '维护中', IN_USE: '使用中' }
-  return map[status] || status
-}
+const getStatusType = (status) => statusMeta(DEVICE_STATUS, status).type
+const getStatusText = (status) => statusMeta(DEVICE_STATUS, status).label
 
 const viewDetail = (id) => {
   router.push(`/user/device/${id}`)

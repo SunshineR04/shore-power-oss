@@ -29,7 +29,7 @@
     </div>
 
     <el-row :gutter="20">
-      <el-col :span="8" v-for="ship in filteredShips" :key="ship.id" class="ship-col">
+      <el-col :xs="24" :sm="12" :lg="8" v-for="ship in filteredShips" :key="ship.id" class="ship-col">
         <div class="ship-card">
           <div class="ship-card-header">
             <div class="ship-type-icon" :style="{'--icon-color': getTypeColor(ship.shipType)}">
@@ -63,7 +63,7 @@
             </div>
             <div class="info-row">
               <span class="info-label">电气参数</span>
-              <span class="info-value">{{ ship.ratedVoltage ? ship.ratedVoltage + 'V' : '-' }} / {{ ship.ratedPower ? ship.ratedPower + 'kW' : '-' }}</span>
+              <span class="info-value">{{ shipParams(ship) }}</span>
             </div>
             <div class="info-row">
               <span class="info-label">尺度</span>
@@ -85,7 +85,8 @@
             <el-button size="small" @click="openEditDialog(ship)">编辑</el-button>
             <el-button
               size="small"
-              :type="ship.status === 1 ? 'warning' : 'success'"
+              :type="ship.status === 1 ? 'info' : 'primary'"
+              plain
               @click="handleToggle(ship)"
             >
               {{ ship.status === 1 ? '禁用' : '启用' }}
@@ -101,12 +102,12 @@
     <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑船舶' : '新增船舶'" width="650px" append-to-body @closed="resetForm">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="船名" prop="shipName">
               <el-input v-model="form.shipName" placeholder="请输入船名" maxlength="100" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="船舶类型" prop="shipType">
               <el-select v-model="form.shipType" placeholder="请选择船舶类型" style="width:100%;" @change="handleShipTypeChange">
                 <el-option v-for="t in shipTypes" :key="t.value" :label="t.label" :value="t.value">
@@ -121,55 +122,55 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="MMSI码">
               <el-input v-model="form.mmsi" placeholder="9位数字" maxlength="20" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="IMO编号">
               <el-input v-model="form.imo" placeholder="IMO开头的编号" maxlength="20" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="船籍">
               <el-input v-model="form.nationality" placeholder="如：中国" maxlength="50" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="总吨位(GT)">
               <el-input-number v-model="form.tonnage" :min="0" :max="999999" :precision="2" style="width:100%;" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="船长(米)">
               <el-input-number v-model="form.length" :min="0" :max="999" :precision="2" controls-position="right" style="width:100%;" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="船宽(米)">
               <el-input-number v-model="form.width" :min="0" :max="999" :precision="2" controls-position="right" style="width:100%;" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="吃水(米)">
               <el-input-number v-model="form.draft" :min="0" :max="99" :precision="2" controls-position="right" style="width:100%;" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="额定电压(V)">
               <el-input-number v-model="form.ratedVoltage" :min="0" :max="20000" :step="100" controls-position="right" style="width:100%;" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="额定功率(kW)">
               <el-input-number v-model="form.ratedPower" :min="0" :max="5000" :step="50" controls-position="right" style="width:100%;" />
             </el-form-item>
@@ -190,6 +191,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { shipApi, deviceApi } from '../../api'
+import { CHART_COLORS } from '../../utils/chartTheme'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Plus, Ship } from '@element-plus/icons-vue'
 
@@ -242,17 +244,25 @@ const getShipTypeText = (type) => {
   return shipTypeLabels.value[type] || type || '未知'
 }
 
+/** 电气参数展示：无参数时显示"未设置" */
+const shipParams = (ship) => {
+  const parts = []
+  if (ship.ratedVoltage) parts.push(`${ship.ratedVoltage}V`)
+  if (ship.ratedPower) parts.push(`${ship.ratedPower}kW`)
+  return parts.length ? parts.join(' / ') : '未设置'
+}
+
 const typeColors = {
-  CARGO: '#409eff', CONTAINER: '#67c23a', TANKER: '#e6a23c',
-  PASSENGER: '#f56c6c', BULK: '#909399', RO_RO: '#9b59b6',
-  FISHING: '#1abc9c', OTHER: '#95a5a6', YACHT: '#00b894'
+  CARGO: CHART_COLORS.primary, CONTAINER: CHART_COLORS.success, TANKER: CHART_COLORS.warning,
+  PASSENGER: CHART_COLORS.danger, BULK: '#94a3b8', RO_RO: CHART_COLORS.purple,
+  FISHING: CHART_COLORS.accent, OTHER: '#94a3b8', YACHT: '#14b8a6'
 }
 const getTypeColor = (type) => {
-  return typeColors[type] || '#409eff'
+  return typeColors[type] || CHART_COLORS.primary
 }
 
 const getStatusTagType = (status) => {
-  return status === 1 ? 'success' : 'info'
+  return status === 1 ? 'primary' : 'info'
 }
 
 async function loadTypes() {

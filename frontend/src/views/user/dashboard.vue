@@ -10,7 +10,7 @@
 
     <div class="stats-bar">
       <div class="metric-tile">
-        <div class="metric-tile__value text-success">{{ onlineCount }}</div>
+        <div class="metric-tile__value text-primary">{{ onlineCount }}</div>
         <div class="metric-tile__label">可用充电桩</div>
       </div>
       <div class="metric-divider"></div>
@@ -20,7 +20,7 @@
       </div>
       <div class="metric-divider"></div>
       <div class="metric-tile">
-        <div class="metric-tile__value text-warning">{{ usageCount }}<span class="metric-tile__unit"> 次</span></div>
+        <div class="metric-tile__value text-primary">{{ usageCount }}<span class="metric-tile__unit"> 次</span></div>
         <div class="metric-tile__label">累计使用</div>
       </div>
       <div class="metric-divider"></div>
@@ -60,17 +60,17 @@
           </div>
         </template>
         <el-row :gutter="16">
-          <el-col :span="6" v-for="device in filteredDevices" :key="device.id" class="device-col">
+          <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="device in filteredDevices" :key="device.id" class="device-col">
             <div class="device-card" @click="$router.push(`/user/device/${device.id}`)">
               <div class="device-card__header">
                 <span class="device-card__name">{{ device.deviceName }}</span>
                 <el-tag
-                  :type="device.status === 'ONLINE' ? 'success' : device.status === 'FAULT' ? 'danger' : 'info'"
+                  :type="deviceStatusMeta(device.status).type"
                   size="small"
                   effect="dark"
                   class="device-card__status"
                 >
-                  {{ statusMap[device.status] }}
+                  {{ deviceStatusMeta(device.status).label }}
                 </el-tag>
               </div>
               <div class="device-card__location">
@@ -79,7 +79,7 @@
               <div class="device-card__tags">
                 <el-tag size="small" type="info">{{ typeMap[device.deviceType] || device.deviceType }}</el-tag>
                 <el-tag size="small" class="tag-power">{{ device.ratedPower }}kW</el-tag>
-                <el-tag size="small" type="warning">{{ device.ratedVoltage }}V</el-tag>
+                <el-tag size="small" type="info">{{ device.ratedVoltage }}V</el-tag>
               </div>
               <div class="device-card__compat">
                 适用：{{ getCompatibleShipLabels(device.deviceType) }}
@@ -108,10 +108,10 @@
         </template>
         <el-row :gutter="16">
           <el-col :span="8" v-for="r in activeReservations" :key="r.id">
-            <div class="reservation-card" :class="'reservation-card--' + resStatusType[r.status]">
+            <div class="reservation-card" :class="'reservation-card--' + resStatusMeta(r.status).type">
               <div class="reservation-card__header">
                 <span class="reservation-card__name">{{ r.deviceName }}</span>
-                <el-tag :type="resStatusType[r.status]" size="small">{{ resStatusMap[r.status] }}</el-tag>
+                <el-tag :type="resStatusMeta(r.status).type" size="small">{{ resStatusMeta(r.status).label }}</el-tag>
               </div>
               <div class="reservation-card__time">
                 {{ formatTime(r.startTime) }} ~ {{ formatTime(r.endTime) }}
@@ -173,10 +173,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { deviceApi, reservationApi, shipApi, systemConfigApi } from '../../api'
+import { DEVICE_STATUS, RESERVATION_STATUS, statusMeta } from '../../utils/status'
 
-const statusMap = { ONLINE: '在线', OFFLINE: '离线', FAULT: '故障', MAINTENANCE: '维护中' }
-const resStatusMap = { PENDING: '待确认', CONFIRMED: '已确认', IN_USE: '使用中', PENDING_PAYMENT: '待支付', COMPLETED: '已完成', CANCELLED: '已取消' }
-const resStatusType = { PENDING: 'warning', CONFIRMED: 'primary', IN_USE: 'success', PENDING_PAYMENT: 'danger', COMPLETED: 'info', CANCELLED: 'info' }
+const deviceStatusMeta = s => statusMeta(DEVICE_STATUS, s)
+const statusMap = { ONLINE: '在线', OFFLINE: '离线', FAULT: '故障', MAINTENANCE: '维护中' } // 兼容按钮文案，与 DEVICE_STATUS 一致
+const resStatusMeta = s => statusMeta(RESERVATION_STATUS, s)
 
 const deviceTypes = ref({
   pileTypes: [],

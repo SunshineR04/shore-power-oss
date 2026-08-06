@@ -32,7 +32,7 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="80">
           <template #default="{ row }">
-            <el-tag :type="statusType[row.status]" size="small">{{ statusMap[row.status] }}</el-tag>
+            <StatusTag :status="row.status" :map="TASK_STATUS" size="small" />
           </template>
         </el-table-column>
         <el-table-column prop="planStartTime" label="计划开始" width="150" />
@@ -56,7 +56,7 @@
     <el-dialog v-model="completeVisible" title="完成任务" width="450" append-to-body>
       <el-form label-width="100px">
         <el-form-item label="实际开始时间">
-          <span style="color: #67c23a; font-weight: 600;">{{ completeActualStart || '未记录' }}</span>
+          <span style="color: var(--success); font-weight: 600;">{{ completeActualStart || '未记录' }}</span>
         </el-form-item>
         <el-form-item label="实际结束时间">
           <span style="font-weight: 600;">{{ new Date().toLocaleString() }}</span>
@@ -77,6 +77,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import request from '../../utils/request'
+import StatusTag from '../../components/StatusTag.vue'
+import { TASK_STATUS } from '../../utils/status'
 
 const tableData = ref([])
 const total = ref(0)
@@ -88,8 +90,6 @@ const completeActualStart = ref('')
 
 const typeMap = { INSPECTION: '巡检', REPAIR: '维修', REPLACEMENT: '更换', CALIBRATION: '校准' }
 const priorityType = { LOW: 'info', MEDIUM: '', HIGH: 'warning', URGENT: 'danger' }
-const statusMap = { PENDING: '待处理', ASSIGNED: '已指派', IN_PROGRESS: '进行中', COMPLETED: '已完成', CANCELLED: '已取消' }
-const statusType = { PENDING: 'info', ASSIGNED: 'warning', IN_PROGRESS: 'primary', COMPLETED: 'success' }
 
 onMounted(() => loadPage())
 

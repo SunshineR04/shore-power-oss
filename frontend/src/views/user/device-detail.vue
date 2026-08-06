@@ -167,7 +167,7 @@
                 <el-rate v-model="ratingForm.rating" />
               </el-form-item>
               <el-form-item label="评价内容">
-                <el-input v-model="ratingForm.comment" type="textarea" rows="3" placeholder="请输入评价内容" />
+                <el-input v-model="ratingForm.comment" type="textarea" :rows="3" placeholder="请输入评价内容" />
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="submitRating" class="submit-btn">提交评价</el-button>
@@ -258,6 +258,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { deviceApi, reservationApi } from '../../api'
+import { DEVICE_STATUS, statusMeta } from '../../utils/status'
 import { ElMessage } from 'element-plus'
 
 const route = useRoute()
@@ -426,15 +427,8 @@ const loadRatings = async () => {
   } catch {}
 }
 
-const getStatusType = (status) => {
-  const map = { ONLINE: 'success', OFFLINE: 'info', FAULT: 'danger', MAINTENANCE: 'warning', IN_USE: 'primary' }
-  return map[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const map = { ONLINE: '在线可用', OFFLINE: '离线', FAULT: '故障', MAINTENANCE: '维护中', IN_USE: '使用中' }
-  return map[status] || status
-}
+const getStatusType = (status) => statusMeta(DEVICE_STATUS, status).type
+const getStatusText = (status) => statusMeta(DEVICE_STATUS, status).label
 
 const showReserveDialog = () => {
   const today = new Date()
@@ -755,11 +749,11 @@ onMounted(() => {
 .metric-current .metric-value { color: var(--primary); }
 
 .metric-power {
-  background: var(--warning-bg);
+  background: var(--accent-bg);
 }
-.metric-power::before { background: var(--warning); }
-.metric-power .metric-icon-wrap { color: var(--warning); }
-.metric-power .metric-value { color: var(--warning); }
+.metric-power::before { background: var(--accent); }
+.metric-power .metric-icon-wrap { color: var(--accent); }
+.metric-power .metric-value { color: var(--accent); }
 
 .metric-temperature {
   background: var(--danger-bg);

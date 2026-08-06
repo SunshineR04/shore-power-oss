@@ -108,7 +108,7 @@
               </el-avatar>
               <div class="user-detail">
                 <span class="user-name">{{ store.userInfo.realName || store.userInfo.username }}</span>
-                <el-tag size="small" :type="store.isSuperAdmin() ? 'danger' : store.isOperator() ? 'warning' : ''" effect="plain" class="user-role-tag">
+                <el-tag size="small" :type="store.isSuperAdmin() ? 'danger' : store.isOperator() ? 'warning' : 'info'" effect="plain" class="user-role-tag">
                   {{ store.isSuperAdmin() ? '管理员' : store.isOperator() ? '运维人员' : '普通用户' }}
                 </el-tag>
               </div>

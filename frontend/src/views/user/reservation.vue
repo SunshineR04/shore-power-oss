@@ -23,19 +23,19 @@
 
       <el-table :data="filteredReservations" class="reservation-table">
         <el-table-column prop="reservationNo" label="预约编号" width="180" />
-        <el-table-column prop="deviceName" label="设备名称" />
-        <el-table-column prop="shipName" label="关联船舶">
+        <el-table-column prop="deviceName" label="设备名称" min-width="150" show-overflow-tooltip />
+        <el-table-column prop="shipName" label="关联船舶" min-width="130">
           <template #default="{row}">
             <span class="ship-name">{{ row.shipName || '-' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="location" label="位置" />
-        <el-table-column label="预约时间" width="180">
+        <el-table-column prop="location" label="位置" min-width="170" show-overflow-tooltip />
+        <el-table-column label="预约时间" min-width="250" show-overflow-tooltip>
           <template #default="{row}">
             <span class="time-range">{{ row.startTime }} 至 {{ row.endTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="实际使用时间" width="180">
+        <el-table-column label="实际使用时间" min-width="250" show-overflow-tooltip>
           <template #default="{row}">
             <span v-if="row.usageStartTime" class="time-range">{{ row.usageStartTime }} 至 {{ row.usageEndTime || '使用中' }}</span>
             <span v-else class="time-range text-muted">-</span>
@@ -46,7 +46,7 @@
             <el-tag :type="getStatusType(row.status)" class="status-tag">{{ getStatusText(row.status) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="300">
+        <el-table-column label="操作" width="300" fixed="right">
           <template #default="{row}">
             <div class="action-buttons">
               <el-button v-if="row.status === 'PENDING'" size="small" type="success" @click="handleConfirm(row.id)">确认</el-button>

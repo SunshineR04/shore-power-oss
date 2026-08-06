@@ -31,6 +31,16 @@ export const ALARM_STATUS = {
   IGNORED:   { label: '已忽略', type: 'info',    dot: '#94a3b8' }
 }
 
+/** 充电预约状态 */
+export const RESERVATION_STATUS = {
+  PENDING:         { label: '待确认', type: 'warning', dot: '#d97706' },
+  CONFIRMED:       { label: '已确认', type: 'primary', dot: '#2563eb' },
+  IN_USE:          { label: '使用中', type: 'success', dot: '#16a34a' },
+  PENDING_PAYMENT: { label: '待支付', type: 'danger',  dot: '#dc2626' },
+  COMPLETED:       { label: '已完成', type: 'info',    dot: '#94a3b8' },
+  CANCELLED:       { label: '已取消', type: 'info',    dot: '#94a3b8' }
+}
+
 /** 取状态元信息，未知状态兜底为 info 灰 */
 export function statusMeta(map, key) {
   return (key && map[key]) || { label: key || '未知', type: 'info', dot: '#94a3b8' }

@@ -11,7 +11,7 @@
     <el-card class="main-card">
       <div class="toolbar">
         <span class="toolbar-title">共 {{ total }} 条通知</span>
-        <el-button size="small" @click="markAllRead" :disabled="total === 0">全部标记已读</el-button>
+        <el-button size="small" type="primary" plain @click="markAllRead" :disabled="total === 0">全部标记已读</el-button>
       </div>
 
       <div v-if="!list.length" class="empty">

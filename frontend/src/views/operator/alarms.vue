@@ -18,7 +18,7 @@
           <el-select v-model="query.level" placeholder="告警级别" clearable class="filter-select" @change="loadPage">
             <el-option label="提示" value="INFO" /><el-option label="警告" value="WARNING" /><el-option label="严重" value="CRITICAL" />
           </el-select>
-          <el-button type="primary" @click="loadPage"><el-icon><Search /></el-icon>搜索</el-button>
+          <el-button type="primary" @click="loadPage"><el-icon><Search /></el-icon><span>搜索</span></el-button>
         </div>
       </div>
 
@@ -38,7 +38,7 @@
         <el-table-column prop="thresholdValue" label="阈值" width="80" />
         <el-table-column prop="status" label="状态" width="80">
           <template #default="{ row }">
-            <el-tag :type="sType[row.status]" size="small">{{ sMap[row.status] }}</el-tag>
+            <StatusTag :status="row.status" :map="ALARM_STATUS" size="small" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="100" fixed="right">
@@ -77,6 +77,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { alarmApi } from '../../api'
+import StatusTag from '../../components/StatusTag.vue'
+import { ALARM_STATUS } from '../../utils/status'
 
 const tableData = ref([])
 const total = ref(0)
@@ -87,8 +89,6 @@ const handleForm = reactive({ id: null, status: 'RESOLVED', remark: '' })
 const levelMap = { INFO: '提示', WARNING: '警告', CRITICAL: '严重' }
 const levelType = { INFO: 'primary', WARNING: 'warning', CRITICAL: 'danger' }
 const typeMap = { VOLTAGE: '电压', CURRENT: '电流', TEMPERATURE: '温度', POWER: '功率', COMMUNICATION: '通信', OTHER: '其他' }
-const sMap = { PENDING: '待处理', RESOLVED: '已解决', IGNORED: '已忽略' }
-const sType = { PENDING: 'danger', RESOLVED: 'success', IGNORED: 'info' }
 
 onMounted(() => loadPage())
 
