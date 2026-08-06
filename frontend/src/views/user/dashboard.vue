@@ -721,3 +721,22 @@ async function endUse(r) {
   gap: 8px;
 }
 </style>
+
+/* ====== 移动端统计区 ====== */
+@media (max-width: 640px) {
+  .stats-bar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  .metric-tile {
+    flex: 1 1 40%;
+    min-width: 0;
+  }
+  .metric-divider {
+    display: none;
+  }
+  .stats-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

@@ -81,7 +81,7 @@
     <el-container>
       <el-header class="app-header">
         <div class="header-left">
-          <button class="collapse-btn" @click="isCollapse = !isCollapse">
+          <button class="collapse-btn" @click="manualToggle = true; isCollapse = !isCollapse">
             <el-icon :size="18"><Fold v-if="!isCollapse" /><Expand v-else /></el-icon>
           </button>
           <el-breadcrumb separator="/" class="header-breadcrumb">
@@ -141,6 +141,12 @@ import request from '../utils/request'
 const store = useUserStore()
 const router = useRouter()
 const isCollapse = ref(false)
+// 移动端视口自适应：<768px 自动折叠为图标栏；用户手动切换后不再自动干预
+const manualToggle = ref(false)
+const applyViewport = () => {
+  if (manualToggle.value) return
+  isCollapse.value = window.innerWidth < 768
+}
 const pendingAlarms = ref(0)
 const unreadNotifs = ref(0)
 
@@ -172,6 +178,8 @@ const fetchUserInfo = async () => {
 }
 
 onMounted(() => {
+  applyViewport()
+  window.addEventListener('resize', applyViewport)
   fetchAlarms()
   fetchUserInfo()
   fetchNotifs()
@@ -180,7 +188,10 @@ onMounted(() => {
     fetchNotifs()
   }, 30000)
 })
-onUnmounted(() => clearInterval(timer))
+onUnmounted(() => {
+  clearInterval(timer)
+  window.removeEventListener('resize', applyViewport)
+})
 
 const handleCmd = cmd => {
   if (cmd === 'profile') {
@@ -473,6 +484,32 @@ const handleCmd = cmd => {
   height: 18px !important;
   padding: 0 5px !important;
   line-height: 18px !important;
+}
+
+
+/* ====== 移动端 Header 精简 ====== */
+@media (max-width: 768px) {
+  .header-breadcrumb {
+    flex: 1;
+    min-width: 0;
+  }
+  .header-breadcrumb :deep(.el-breadcrumb__inner) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40vw;
+  }
+  .user-name,
+  .user-role-tag {
+    display: none !important;
+  }
+  .header-right {
+    gap: 8px;
+    padding-right: 4px;
+  }
+  .app-header {
+    padding: 0 12px;
+  }
 }
 
 /* ====== 主内容区（中性背景，无噪声） ====== */
