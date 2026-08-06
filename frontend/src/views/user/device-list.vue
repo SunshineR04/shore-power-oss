@@ -149,7 +149,9 @@ const loadMyShips = async () => {
   try {
     const res = await shipApi.list()
     myShips.value = res.data || []
-  } catch {}
+  } catch (e) {
+    ElMessage.error('加载船舶列表失败')
+  }
 }
 
 const loadDevices = async () => {
@@ -174,7 +176,9 @@ const loadReservations = async () => {
         reservedDeviceIds.value.add(r.deviceId)
       }
     })
-  } catch {}
+  } catch (e) {
+    ElMessage.error('加载预约状态失败')
+  }
 }
 
 const isDeviceReserved = (deviceId) => {

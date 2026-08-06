@@ -59,7 +59,7 @@ public class MaintenanceController {
     @PreAuthorize("hasRole('ADMIN')")
     public Result<?> add(@RequestBody String rawBody) {
         try {
-            log.info("创建任务请求体: {}", rawBody);
+            // 注意：不要记录 rawBody——可能包含任务内容等业务敏感信息
             MaintenanceTask task = objectMapper.readValue(rawBody, MaintenanceTask.class);
             maintenanceService.create(task);
             return Result.ok();

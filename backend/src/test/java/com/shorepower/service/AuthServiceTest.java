@@ -93,6 +93,22 @@ class AuthServiceTest {
     }
 
     @Test
+    void login_rateLimited_afterFiveFailures() {
+        when(userMapper.selectOne(any())).thenReturn(null); // 用户不存在 → 计数失败
+
+        LoginRequest req = new LoginRequest();
+        req.setUsername("attacker");
+        req.setPassword("x");
+        for (int i = 0; i < 5; i++) {
+            authService.login(req);
+        }
+        // 第 6 次应被限流拒绝（code 429），且不再查库
+        Result<?> result = authService.login(req);
+        assertEquals(429, result.getCode());
+        verify(userMapper, times(5)).selectOne(any());
+    }
+
+    @Test
     void register_emptyPhoneAndEmail_normalizedToNull() {
         when(userMapper.selectCount(any())).thenReturn(0L);
 

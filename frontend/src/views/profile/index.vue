@@ -161,6 +161,12 @@ function beforeUpload(file) {
     ElMessage.error('头像文件大小不能超过 2MB')
     return false
   }
+  // 校验真实 MIME 类型（仅允许常见图片格式），防止伪装文件上传
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+  if (!allowedTypes.includes(file.type)) {
+    ElMessage.error('仅支持 JPG/PNG/GIF/WebP 图片')
+    return false
+  }
   const reader = new FileReader()
   reader.onload = async (e) => {
     try {

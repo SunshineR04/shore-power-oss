@@ -158,30 +158,33 @@ public class EnergyStatService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
             BigDecimal runningHours = BigDecimal.valueOf(todayData.size() * 10.0 / 3600.0).setScale(2, RoundingMode.HALF_UP);
 
-            LambdaQueryWrapper<EnergyStat> wrapper = new LambdaQueryWrapper<EnergyStat>()
-                .eq(EnergyStat::getDeviceId, dev.getId())
-                .eq(EnergyStat::getStatDate, today)
-                .eq(EnergyStat::getStatType, "DAILY");
-            EnergyStat existing = energyStatMapper.selectOne(wrapper);
-
-            if (existing != null) {
-                existing.setTotalEnergy(totalEnergy.setScale(2, RoundingMode.HALF_UP));
-                existing.setEnergyCost(totalCost.setScale(2, RoundingMode.HALF_UP));
-                existing.setPeakPower(maxPower.setScale(2, RoundingMode.HALF_UP));
-                existing.setAvgPower(totalPower.divide(BigDecimal.valueOf(todayData.size()), 2, RoundingMode.HALF_UP));
-                existing.setRunningHours(runningHours);
-                energyStatMapper.updateById(existing);
-            } else {
-                EnergyStat stat = new EnergyStat();
-                stat.setDeviceId(dev.getId());
-                stat.setStatDate(today);
-                stat.setStatType("DAILY");
-                stat.setTotalEnergy(totalEnergy.setScale(2, RoundingMode.HALF_UP));
-                stat.setEnergyCost(totalCost.setScale(2, RoundingMode.HALF_UP));
-                stat.setPeakPower(maxPower.setScale(2, RoundingMode.HALF_UP));
-                stat.setAvgPower(totalPower.divide(BigDecimal.valueOf(todayData.size()), 2, RoundingMode.HALF_UP));
-                stat.setRunningHours(runningHours);
+            // 并发安全：先尝试插入（V8 唯一索引保证 (device,date,type) 唯一），
+            // 冲突（并发定时任务/手动重跑）则回退为更新，避免重复记录
+            EnergyStat stat = new EnergyStat();
+            stat.setDeviceId(dev.getId());
+            stat.setStatDate(today);
+            stat.setStatType("DAILY");
+            stat.setTotalEnergy(totalEnergy.setScale(2, RoundingMode.HALF_UP));
+            stat.setEnergyCost(totalCost.setScale(2, RoundingMode.HALF_UP));
+            stat.setPeakPower(maxPower.setScale(2, RoundingMode.HALF_UP));
+            stat.setAvgPower(totalPower.divide(BigDecimal.valueOf(todayData.size()), 2, RoundingMode.HALF_UP));
+            stat.setRunningHours(runningHours);
+            try {
                 energyStatMapper.insert(stat);
+            } catch (org.springframework.dao.DuplicateKeyException e) {
+                LambdaQueryWrapper<EnergyStat> wrapper = new LambdaQueryWrapper<EnergyStat>()
+                    .eq(EnergyStat::getDeviceId, dev.getId())
+                    .eq(EnergyStat::getStatDate, today)
+                    .eq(EnergyStat::getStatType, "DAILY");
+                EnergyStat existing = energyStatMapper.selectOne(wrapper);
+                if (existing != null) {
+                    existing.setTotalEnergy(stat.getTotalEnergy());
+                    existing.setEnergyCost(stat.getEnergyCost());
+                    existing.setPeakPower(stat.getPeakPower());
+                    existing.setAvgPower(stat.getAvgPower());
+                    existing.setRunningHours(stat.getRunningHours());
+                    energyStatMapper.updateById(existing);
+                }
             }
         }
     }

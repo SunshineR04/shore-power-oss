@@ -345,7 +345,9 @@ const loadConfigs = async () => {
         if (found) { weatherLocation.value = [p.value, saved]; break }
       }
     }
-  } catch {}
+  } catch (e) {
+    ElMessage.error('加载系统配置失败')
+  }
 }
 
 const handleBatchSave = async () => {

@@ -7,6 +7,7 @@ import com.shorepower.service.ElectricityPriceService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +48,15 @@ public class EnergyController {
 
     @GetMapping("/trend")
     public Result<?> trend(@RequestParam String statType,
-                           @RequestParam String startDate,
-                           @RequestParam String endDate) {
-        List<Map<String, Object>> result = energyStatMapper.getUsageRecordTrend(startDate, endDate);
+                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        if (endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("结束日期不能早于开始日期");
+        }
+        if (ChronoUnit.DAYS.between(startDate, endDate) > 366) {
+            throw new IllegalArgumentException("查询范围不能超过一年");
+        }
+        List<Map<String, Object>> result = energyStatMapper.getUsageRecordTrend(startDate.toString(), endDate.toString());
         if ("WEEKLY".equals(statType) || "MONTHLY".equals(statType)) {
             result = aggregateByPeriod(result, statType);
         }
@@ -57,23 +64,27 @@ public class EnergyController {
     }
 
     @GetMapping("/by-device")
-    public Result<?> byDevice(@RequestParam String startDate,
-                              @RequestParam String endDate) {
-        return Result.ok(energyStatMapper.getUsageRecordByDevice(startDate, endDate));
+    public Result<?> byDevice(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        if (endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("结束日期不能早于开始日期");
+        }
+        return Result.ok(energyStatMapper.getUsageRecordByDevice(startDate.toString(), endDate.toString()));
     }
 
     @GetMapping("/comparison")
     public Result<?> comparison(@RequestParam String statType,
-                                @RequestParam String startDate,
-                                @RequestParam String endDate) {
-        LocalDate start = LocalDate.parse(startDate);
-        LocalDate end = LocalDate.parse(endDate);
-        long days = ChronoUnit.DAYS.between(start, end) + 1;
+                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        if (endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("结束日期不能早于开始日期");
+        }
+        long days = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 
-        LocalDate prevStart = start.minusDays(days);
-        LocalDate prevEnd = start.minusDays(1);
+        LocalDate prevStart = startDate.minusDays(days);
+        LocalDate prevEnd = startDate.minusDays(1);
 
-        List<Map<String, Object>> current = energyStatMapper.getUsageRecordTrend(startDate, endDate);
+        List<Map<String, Object>> current = energyStatMapper.getUsageRecordTrend(startDate.toString(), endDate.toString());
         List<Map<String, Object>> previous = energyStatMapper.getUsageRecordTrend(prevStart.toString(), prevEnd.toString());
 
         if ("WEEKLY".equals(statType) || "MONTHLY".equals(statType)) {

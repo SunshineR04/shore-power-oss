@@ -93,10 +93,14 @@ public class ReservationService {
      *   Tier N: 没有船舶信息 → 跳过匹配
      *
      * 预计费用 = 额定功率 × 55%负载因子 × 使用时长 × 分时电价
+     *
+     * 并发安全：方法在事务内先对设备行加排他锁（SELECT ... FOR UPDATE），
+     * 使同一设备的并发预约串行化，配合 V8 的时间段冲突检查杜绝重叠预约。
      */
+    @Transactional
     public Result<Reservation> createReservation(Long userId, Long deviceId, Long shipId, LocalDateTime startTime, LocalDateTime endTime) {
-        // V1: 设备必须存在
-        Device device = deviceMapper.selectById(deviceId);
+        // V1: 设备必须存在（行级锁：同一设备的并发创建在此串行）
+        Device device = deviceMapper.selectByIdForUpdate(deviceId);
         if (device == null) {
             return Result.fail("设备不存在");
         }

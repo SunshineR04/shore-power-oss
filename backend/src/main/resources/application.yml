@@ -22,7 +22,8 @@ mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # SQL 日志走 SLF4J（生产不打印；dev profile 下由 logging.level 控制 debug 输出）
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 jwt:
   # 过期时间可配置（毫秒），默认 2 小时，便于演示环境测试过期行为
