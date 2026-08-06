@@ -4,6 +4,8 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  # 支持手动触发：平台故障/队列卡死时可绕过旧 run 直接重跑验证
+  workflow_dispatch:
 
 jobs:
   backend:
