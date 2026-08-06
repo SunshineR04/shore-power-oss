@@ -65,8 +65,14 @@ export function useDataSync() {
           refreshKey.value++               // 触发 Vue 响应式更新
         })
       },
-      onDisconnect: () => startPolling(),  // 断开 → 启动 HTTP 轮询兜底
-      onStompError: () => startPolling()   // 错误 → 启动 HTTP 轮询兜底
+      onDisconnect: () => {
+        console.warn('[data-sync] WebSocket 已断开，启用 10s 轮询兜底')
+        startPolling()  // 断开 → 启动 HTTP 轮询兜底
+      },
+      onStompError: frame => {
+        console.warn('[data-sync] STOMP 错误:', frame?.headers?.message || frame?.body || frame)
+        startPolling()  // 错误 → 启动 HTTP 轮询兜底
+      }
     })
     client.activate()
   }

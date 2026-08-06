@@ -9,19 +9,19 @@ import './style.css'
 
 // 按需注册模板中实际使用的图标，避免全量注册导致的 bundle 膨胀
 import {
-  Bell, BellFilled, Calendar, Check, CircleCheck, CircleClose,
-  Connection, Cpu, Expand, Fold, Lightning, Location, Message,
+  ArrowDown, ArrowRight, Bell, BellFilled, Calendar, Check, CircleCheck, CircleClose,
+  Coin, Connection, Cpu, Expand, Fold, HomeFilled, Lightning, Location, Message,
   Money, Monitor, Moon, Odometer, Plus, Search, SetUp, Setting,
-  Ship, Sunny, Timer, Tools, User, Wallet, Warning, WarningFilled
+  Ship, Sunny, Timer, Tools, TrendCharts, User, Wallet, Warning, WarningFilled
 } from '@element-plus/icons-vue'
 
 const app = createApp(App)
 
 const icons = {
-  Bell, BellFilled, Calendar, Check, CircleCheck, CircleClose,
-  Connection, Cpu, Expand, Fold, Lightning, Location, Message,
+  ArrowDown, ArrowRight, Bell, BellFilled, Calendar, Check, CircleCheck, CircleClose,
+  Coin, Connection, Cpu, Expand, Fold, HomeFilled, Lightning, Location, Message,
   Money, Monitor, Moon, Odometer, Plus, Search, SetUp, Setting,
-  Ship, Sunny, Timer, Tools, User, Wallet, Warning, WarningFilled
+  Ship, Sunny, Timer, Tools, TrendCharts, User, Wallet, Warning, WarningFilled
 }
 for (const [key, component] of Object.entries(icons)) {
   app.component(key, component)

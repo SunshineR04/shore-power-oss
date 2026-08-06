@@ -116,6 +116,12 @@ onUnmounted(() => {
   if (alarmPollTimer) clearInterval(alarmPollTimer)
 })
 
+function startAlarmPolling() {
+  // 幂等：已有轮询则先清理，避免 WS 抖动时定时器叠加
+  if (alarmPollTimer) { clearInterval(alarmPollTimer); alarmPollTimer = null }
+  alarmPollTimer = setInterval(() => loadPage(), 15000)
+}
+
 function initWebSocket() {
   const token = sessionStorage.getItem('token')
   stompClient = new Client({
@@ -131,11 +137,13 @@ function initWebSocket() {
     },
     onDisconnect: () => {
       wsConnected.value = false
-      alarmPollTimer = setInterval(() => loadPage(), 15000)
+      console.warn('[alarm] WebSocket 已断开，启用 15s 轮询兜底')
+      startAlarmPolling()
     },
-    onStompError: () => {
+    onStompError: frame => {
       wsConnected.value = false
-      alarmPollTimer = setInterval(() => loadPage(), 15000)
+      console.warn('[alarm] STOMP 错误:', frame?.headers?.message || frame?.body || frame)
+      startAlarmPolling()
     }
   })
   stompClient.activate()

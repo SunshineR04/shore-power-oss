@@ -199,6 +199,21 @@ CI（GitHub Actions，见 `.github/workflows/ci.yml`）会执行：
   生产 profile 不会写入任何模拟数据。
 - 演示账号与模拟支付仅用于本地演示，生产环境必须删除种子数据并接入真实支付网关。
 
+## WebSocket 断线排障
+
+监控面板右上角显示"已断开"或无实时参数时，按以下顺序排查：
+
+1. **打开浏览器控制台（F12 → Console）**：页面会在断线时打印 `[monitor] STOMP 错误: <原因>`。
+   - `Token无效或已过期` / `Token已失效，请重新登录` → 重新登录后刷新页面。
+   - `账号已被禁用` → 账号被禁用，联系管理员。
+   - `无权订阅此主题` → 当前账号角色无权查看运维数据（设备/告警主题仅 ADMIN/OPERATOR）。
+   - 无错误但持续"已断开" → 检查 Network 面板 `/ws/...` 握手状态码（403 表示来源域名不在 CORS 白名单，见下方）。
+2. **确认后端为 dev profile 启动**：启动日志应显示 `The following profiles are active: dev`。
+   非 dev 环境模拟器不运行，设备无实时数据（设备状态仍显示"在线"，但无参数）。
+3. **确认访问来源在白名单**：`cors.allowed-origins` 默认仅允许 `http://localhost:3000,http://localhost:5173`；
+   使用其他端口/局域网 IP/域名访问时需在环境变量 `CORS_ORIGINS` 中加入对应来源。
+4. **确认心跳未超时**：前端与后端心跳均为 10s（已显式配置），一般不会误断。
+
 ## 数据库迁移
 
 使用 Flyway，脚本位于 `backend/src/main/resources/db/migration/`：

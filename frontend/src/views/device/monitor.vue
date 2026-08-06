@@ -278,6 +278,7 @@ async function pollTrend() {
 }
 
 function startPolling() {
+  if (pollTimer) return // 幂等：已有轮询则不重复启动（避免断线重连叠加定时器）
   pollLatestData()
   pollDeviceStatus()
   pollTrend()
@@ -286,6 +287,7 @@ function startPolling() {
 }
 
 function startStatusPolling() {
+  if (statusPollTimer) return // 幂等
   pollDeviceStatus()
   statusPollTimer = setInterval(pollDeviceStatus, 10000)
 }
@@ -356,13 +358,18 @@ function initWebSocket() {
     onDisconnect: () => {
       wsConnected.value = false
       clearTimeout(wsSilentTimer)
+      console.warn('[monitor] WebSocket 已断开，启用 HTTP 轮询兜底（断线原因见上方 STOMP 错误/网络面板）')
+      startStatusPolling()
       wsReconnectTimer = setTimeout(() => {
         if (!wsConnected.value) startPolling()
       }, 5000)
     },
-    onStompError: () => {
+    onStompError: frame => {
       wsConnected.value = false
       clearTimeout(wsSilentTimer)
+      // 打印拒绝原因（如"无权订阅此主题"/"Token已失效"），方便定位
+      console.warn('[monitor] STOMP 错误:', frame?.headers?.message || frame?.body || frame)
+      startStatusPolling()
       wsReconnectTimer = setTimeout(() => {
         if (!wsConnected.value) startPolling()
       }, 5000)

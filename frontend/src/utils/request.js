@@ -37,6 +37,9 @@ request.interceptors.response.use(
       ElMessage.error('登录已过期，请重新登录')
     } else if (status === 403) {
       ElMessage.error(msg === 'Request failed with status code 403' ? '权限不足' : msg)
+    } else if (!status || status >= 500) {
+      // 网络错误/网关错误（断线轮询、后端重启等）：静默，不弹窗刷屏
+      // 页面可通过 promise 拒绝自行处理（如显示"已断开"状态）
     } else if (!isRedirecting) {
       ElMessage.error(msg)
     }
