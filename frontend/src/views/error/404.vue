@@ -19,7 +19,7 @@
     <main class="nf-stage">
       <div class="nf-card">
         <div class="nf-illustration">
-          <el-icon :size="72" color="var(--primary-light)"><Compass /></el-icon>
+          <el-icon :size="72" color="var(--primary)"><Compass /></el-icon>
           <div class="nf-illustration__ring"></div>
         </div>
         <p class="nf-code">404</p>

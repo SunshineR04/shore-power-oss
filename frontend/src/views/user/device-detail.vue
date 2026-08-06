@@ -533,7 +533,7 @@ onMounted(() => {
   border-color: var(--primary);
   color: var(--primary);
   background: var(--primary-bg);
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.15);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.15);
 }
 
 .header-title-group {
@@ -645,14 +645,14 @@ onMounted(() => {
   height: 8px;
   border-radius: 50%;
   background: var(--primary);
-  box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(37, 99, 235, 0.3);
   animation: pulse 2s ease-in-out infinite;
   margin-left: auto;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(34, 197, 94, 0.3); }
-  50% { opacity: 0.4; box-shadow: 0 0 4px var(--primary), 0 0 8px rgba(34, 197, 94, 0.15); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(37, 99, 235, 0.3); }
+  50% { opacity: 0.4; box-shadow: 0 0 4px var(--primary), 0 0 8px rgba(37, 99, 235, 0.15); }
 }
 
 .info-grid {
@@ -870,7 +870,7 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 700;
   flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
 }
 
 .rating-username {
@@ -918,7 +918,7 @@ onMounted(() => {
   background: var(--primary) !important;
   border-color: var(--primary) !important;
   transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.35), var(--shadow-glow);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.35), var(--shadow-glow);
 }
 
 .reserve-card {
@@ -984,7 +984,7 @@ onMounted(() => {
 
 .reserve-status-dot.status-ONLINE {
   background: var(--primary);
-  box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(37, 99, 235, 0.3);
 }
 
 .reserve-status-dot.status-OFFLINE {
@@ -1003,7 +1003,7 @@ onMounted(() => {
 
 .reserve-status-dot.status-IN_USE {
   background: var(--accent);
-  box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(14, 165, 233, 0.3);
 }
 
 .reserve-btn {
@@ -1025,7 +1025,7 @@ onMounted(() => {
 
 .reserve-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.35), var(--shadow-glow);
+  box-shadow: 0 0 24px rgba(37, 99, 235, 0.35), var(--shadow-glow);
 }
 
 .reserve-btn-disabled {

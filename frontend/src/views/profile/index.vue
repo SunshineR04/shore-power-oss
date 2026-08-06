@@ -247,7 +247,7 @@ async function handleChangePassword() {
 .page-subtitle {
   font-family: var(--font-body);
   font-size: 14px;
-  color: rgba(241, 245, 249, 0.65);
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 400;
 }
@@ -259,7 +259,7 @@ async function handleChangePassword() {
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -271,7 +271,7 @@ async function handleChangePassword() {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
 }
 
 .avatar-card {
@@ -306,7 +306,7 @@ async function handleChangePassword() {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
 }
 
 .avatar-section {
@@ -387,7 +387,7 @@ async function handleChangePassword() {
 }
 
 .form-card-icon--info {
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(37, 99, 235, 0.1);
   color: var(--primary);
 }
 

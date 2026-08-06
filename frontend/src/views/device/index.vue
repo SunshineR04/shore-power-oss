@@ -29,14 +29,14 @@
 
       <el-table :data="tableData" border stripe class="device-table">
         <el-table-column prop="deviceCode" label="设备编号" width="130" />
-        <el-table-column prop="deviceName" label="设备名称" min-width="150" />
+        <el-table-column prop="deviceName" label="设备名称" min-width="150" show-overflow-tooltip />
         <el-table-column prop="deviceType" label="岸电桩类型" width="140">
           <template #default="{ row }">{{ typeMap[row.deviceType] || row.deviceType }}</template>
         </el-table-column>
-        <el-table-column prop="location" label="安装位置" min-width="180" />
+        <el-table-column prop="location" label="安装位置" min-width="180" show-overflow-tooltip />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
-            <el-tag :type="statusType[row.status]">{{ statusMap[row.status] }}</el-tag>
+            <StatusTag :status="row.status" />
           </template>
         </el-table-column>
         <el-table-column prop="ratedVoltage" label="额定电压(V)" width="120" />
@@ -72,17 +72,17 @@
         </el-form-item>
         <el-form-item label="安装位置"><el-input v-model="form.location" /></el-form-item>
         <el-row :gutter="16">
-          <el-col :span="8">
+          <el-col :xs="24" :sm="12" :md="8">
             <el-form-item label="额定电压(V)" label-width="90px">
               <el-input-number v-model="form.ratedVoltage" :min="0" :step="10" controls-position="right" class="full-width" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :xs="24" :sm="12" :md="8">
             <el-form-item label="额定电流(A)" label-width="90px">
               <el-input-number v-model="form.ratedCurrent" :min="0" :step="5" controls-position="right" class="full-width" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :xs="24" :sm="12" :md="8">
             <el-form-item label="额定功率(kW)" label-width="100px">
               <el-input-number v-model="form.ratedPower" :min="0" :step="5" controls-position="right" class="full-width" />
             </el-form-item>
@@ -109,6 +109,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { deviceApi } from '../../api'
 import { useUserStore } from '../../store/user'
+import StatusTag from '../../components/StatusTag.vue'
 
 const store = useUserStore()
 const tableData = ref([])
@@ -123,8 +124,6 @@ const form = reactive({ id: null, deviceCode: '', deviceName: '', deviceType: ''
 const pileTypes = ref([])
 const typeMap = computed(() => Object.fromEntries((pileTypes.value || []).map(t => [t.value, t.label])))
 
-const statusMap = { ONLINE: '在线', OFFLINE: '离线', FAULT: '故障', MAINTENANCE: '维护中', IN_USE: '使用中' }
-const statusType = { ONLINE: 'success', OFFLINE: 'info', FAULT: 'danger', MAINTENANCE: 'warning', IN_USE: 'primary' }
 
 const rules = {
   deviceCode: [{ required: true, message: '请输入设备编号', trigger: 'blur' }],
@@ -280,13 +279,13 @@ async function handleDelete(id) {
   font-family: var(--font-body);
   font-weight: 600;
   padding: 8px 20px;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
   transition: all var(--transition-normal);
 }
 
 .add-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
 }
 

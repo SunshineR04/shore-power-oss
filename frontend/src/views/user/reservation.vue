@@ -340,7 +340,7 @@ onMounted(() => {
 }
 
 .reservation-table :deep(.el-table__row:hover > td) {
-  background-color: rgba(34, 197, 94, 0.03) !important;
+  background-color: rgba(37, 99, 235, 0.03) !important;
 }
 
 .ship-name {
@@ -411,8 +411,8 @@ onMounted(() => {
 }
 
 .pay-amount-section {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(6, 182, 212, 0.04));
-  border: 1px solid rgba(34, 197, 94, 0.12);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(14, 165, 233, 0.04));
+  border: 1px solid rgba(37, 99, 235, 0.12);
   border-radius: var(--radius-md);
   padding: 24px;
   margin-bottom: 20px;

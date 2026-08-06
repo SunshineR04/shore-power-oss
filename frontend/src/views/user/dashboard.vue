@@ -644,11 +644,11 @@ async function endUse(r) {
   font-weight: 600 !important;
   border-radius: var(--radius-sm) !important;
   transition: all var(--transition-normal) !important;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
 }
 
 .btn-reserve:hover {
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
   transform: translateY(-1px);
 }
 

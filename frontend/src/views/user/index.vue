@@ -35,10 +35,10 @@
       </div>
 
       <el-table :data="tableData" border stripe class="data-table">
-        <el-table-column prop="username" label="用户名" width="130" />
-        <el-table-column prop="realName" label="真实姓名" width="120" />
-        <el-table-column prop="phone" label="手机号" width="130" />
-        <el-table-column prop="email" label="邮箱" min-width="180" />
+        <el-table-column prop="username" label="用户名" width="110" />
+        <el-table-column prop="realName" label="真实姓名" width="100" />
+        <el-table-column prop="phone" label="手机号" width="110" />
+        <el-table-column prop="email" label="邮箱" min-width="160" />
         <el-table-column prop="role" label="角色" width="100">
           <template #default="{ row }">
             <el-tag :type="row.role === 'ADMIN' ? 'danger' : row.role === 'OPERATOR' ? 'warning' : 'primary'" size="small">{{ row.role === 'ADMIN' ? '管理员' : row.role === 'OPERATOR' ? '运维人员' : '普通用户' }}</el-tag>
@@ -49,7 +49,7 @@
             <el-switch :model-value="row.status === 1" @change="handleToggle(row.id)" />
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="170" />
+        <el-table-column prop="createTime" label="创建时间" width="150" />
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
             <el-button size="small" type="primary" link @click="openDialog(row)">编辑</el-button>
@@ -244,13 +244,13 @@ async function handleToggle(id) {
   padding: 10px 20px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   border: none;
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
   transition: all var(--transition-normal);
 }
 
 .btn-create:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
 .btn-create:active {
@@ -307,7 +307,7 @@ async function handleToggle(id) {
   border: none;
   border-radius: var(--radius-sm);
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 .full-width {

@@ -7,7 +7,7 @@
 
 /** 设备状态：key → { label 文案, type el-tag 类型, dot 指示点色 } */
 export const DEVICE_STATUS = {
-  ONLINE:      { label: '在线',   type: 'success', dot: '#16a34a' },
+  ONLINE:      { label: '在线',   type: 'primary', dot: '#2563eb' },
   IN_USE:      { label: '使用中', type: 'primary', dot: '#2563eb' },
   OFFLINE:     { label: '离线',   type: 'info',    dot: '#64748b' },
   FAULT:       { label: '故障',   type: 'danger',  dot: '#dc2626' },

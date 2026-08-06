@@ -44,7 +44,7 @@
         <el-table-column prop="thresholdValue" label="阈值" width="120" />
         <el-table-column prop="status" label="状态" width="90">
           <template #default="{ row }">
-            <el-tag :type="sType[row.status]" size="small">{{ sMap[row.status] }}</el-tag>
+            <StatusTag :status="row.status" :map="ALARM_STATUS" size="small" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
@@ -87,6 +87,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
 import { alarmApi, deviceApi } from '../../api'
+import StatusTag from '../../components/StatusTag.vue'
+import { ALARM_STATUS } from '../../utils/status'
 
 const tableData = ref([])
 const total = ref(0)
@@ -101,8 +103,6 @@ let alarmPollTimer = null
 const levelMap = { INFO: '提示', WARNING: '警告', CRITICAL: '严重' }
 const levelType = { INFO: 'primary', WARNING: 'warning', CRITICAL: 'danger' }
 const typeMap = { VOLTAGE: '电压', CURRENT: '电流', TEMPERATURE: '温度', POWER: '功率', COMMUNICATION: '通信', OTHER: '其他' }
-const sMap = { PENDING: '待处理', PROCESSING: '处理中', RESOLVED: '已解决', IGNORED: '已忽略' }
-const sType = { PENDING: 'danger', PROCESSING: 'warning', RESOLVED: 'success', IGNORED: 'info' }
 
 onMounted(async () => {
   loadPage()

@@ -9,7 +9,7 @@
     </div>
 
     <el-row :gutter="16" class="stat-row">
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <div class="stat-card stat-card--recharge">
           <div class="stat-card__icon stat-card__icon--recharge">
             <el-icon :size="20"><Coin /></el-icon>
@@ -21,7 +21,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <div class="stat-card stat-card--month">
           <div class="stat-card__icon stat-card__icon--month">
             <el-icon :size="20"><Calendar /></el-icon>
@@ -33,7 +33,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <div class="stat-card stat-card--today">
           <div class="stat-card__icon stat-card__icon--today">
             <el-icon :size="20"><Odometer /></el-icon>
@@ -48,7 +48,7 @@
     </el-row>
 
     <el-row :gutter="16" class="chart-row">
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="12">
         <el-card class="section-card">
           <template #header>
             <div class="section-header">
@@ -60,7 +60,7 @@
           <div ref="trendChartRef" class="chart-area chart-area--trend"></div>
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="12">
         <el-card class="section-card week-card">
           <template #header>
             <div class="section-header">
@@ -81,7 +81,7 @@
     </el-row>
 
     <el-row :gutter="16" class="ranking-row">
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="12">
         <el-card class="section-card">
           <template #header>
             <span class="section-header__title">设备收益排行</span>
@@ -111,7 +111,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="12">
         <el-card class="section-card">
           <template #header>
             <span class="section-header__title">用户消费排行</span>
@@ -150,6 +150,7 @@ import { ref, reactive, watch, onMounted, nextTick, onUnmounted } from 'vue'
 import { useChartResize } from '../../composables/useChartResize'
 import { financeApi } from '../../api'
 import echarts from '../../utils/echarts'
+import { CHART_COLORS, CHART_TEXT, CHART_LABEL, CHART_AXIS_LINE, CHART_SPLIT_LINE } from '../../utils/chartTheme'
 import { useDataSync } from '../../composables/useDataSync'
 
 const summary = reactive({})
@@ -211,18 +212,18 @@ const initTrendChart = () => {
   trendChart = echarts.init(trendChartRef.value)
   trendChart.setOption({
     backgroundColor: 'transparent',
-    textStyle: { color: '#94a3b8' },
+    textStyle: { color: CHART_TEXT },
     tooltip: { trigger: 'axis' },
-    legend: { data: ['消费金额', '使用次数'], top: 8, left: 'center', textStyle: { color: '#94a3b8' } },
+    legend: { data: ['消费金额', '使用次数'], top: 8, left: 'center', textStyle: { color: CHART_TEXT } },
     grid: { left: '3%', right: '4%', bottom: 60, top: 40 },
-    xAxis: { type: 'category', axisLabel: { rotate: 30, color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } } },
+    xAxis: { type: 'category', axisLabel: { rotate: 30, color: CHART_LABEL }, axisLine: { lineStyle: { color: CHART_AXIS_LINE } } },
     yAxis: [
-      { type: 'value', name: '金额(元)', nameTextStyle: { color: '#94a3b8' }, axisLabel: { color: '#94a3b8' }, splitLine: { lineStyle: { color: '#1e293b' } } },
-      { type: 'value', name: '次数', nameTextStyle: { color: '#94a3b8' }, axisLabel: { color: '#94a3b8' }, splitLine: { lineStyle: { color: '#1e293b' } } }
+      { type: 'value', name: '金额(元)', nameTextStyle: { color: CHART_LABEL }, axisLabel: { color: CHART_LABEL }, splitLine: { lineStyle: { color: CHART_SPLIT_LINE } } },
+      { type: 'value', name: '次数', nameTextStyle: { color: CHART_LABEL }, axisLabel: { color: CHART_LABEL }, splitLine: { lineStyle: { color: CHART_SPLIT_LINE } } }
     ],
     series: [
-      { name: '消费金额', type: 'bar', itemStyle: { color: '#e6a23c' } },
-      { name: '使用次数', type: 'line', yAxisIndex: 1, itemStyle: { color: '#67c23a' } }
+      { name: '消费金额', type: 'bar', itemStyle: { color: CHART_COLORS.primary } },
+      { name: '使用次数', type: 'line', yAxisIndex: 1, itemStyle: { color: CHART_COLORS.accent } }
     ]
   })
 }
@@ -232,14 +233,14 @@ const initWeekChart = () => {
   weekChart = echarts.init(weekChartRef.value)
   weekChart.setOption({
     backgroundColor: 'transparent',
-    textStyle: { color: '#94a3b8' },
+    textStyle: { color: CHART_TEXT },
     tooltip: { trigger: 'axis' },
-    legend: { data: ['消费'], top: 4, left: 'center', textStyle: { color: '#94a3b8' } },
+    legend: { data: ['消费'], top: 4, left: 'center', textStyle: { color: CHART_TEXT } },
     grid: { left: '3%', right: '4%', bottom: 40, top: 30 },
-    xAxis: { type: 'category', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } } },
-    yAxis: { type: 'value', name: '金额(元)', nameTextStyle: { color: '#94a3b8' }, axisLabel: { color: '#94a3b8' }, splitLine: { lineStyle: { color: '#1e293b' } } },
+    xAxis: { type: 'category', axisLabel: { color: CHART_LABEL }, axisLine: { lineStyle: { color: CHART_AXIS_LINE } } },
+    yAxis: { type: 'value', name: '金额(元)', nameTextStyle: { color: CHART_LABEL }, axisLabel: { color: CHART_LABEL }, splitLine: { lineStyle: { color: CHART_SPLIT_LINE } } },
     series: [
-      { name: '消费', type: 'line', areaStyle: {}, itemStyle: { color: '#e6a23c' }, smooth: true }
+      { name: '消费', type: 'line', areaStyle: {}, itemStyle: { color: CHART_COLORS.primary }, smooth: true }
     ]
   })
 }
@@ -338,7 +339,7 @@ onUnmounted(() => {
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, var(--warning) 0%, #b45309 100%);
+  background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
   border-radius: 2px 0 0 2px;
 }
 
@@ -455,6 +456,7 @@ onUnmounted(() => {
   color: var(--text-muted);
   margin-top: 4px;
   font-family: var(--font-mono);
+  white-space: nowrap;
 }
 
 /* ── Chart Section ── */
@@ -603,8 +605,8 @@ onUnmounted(() => {
 }
 
 .rank-item--top {
-  background: rgba(34, 197, 94, 0.06);
-  border: 1px solid rgba(34, 197, 94, 0.1);
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.1);
 }
 
 .rank-item__rank {
@@ -629,7 +631,7 @@ onUnmounted(() => {
 }
 
 .rank-item__avatar--device .rank-avatar {
-  background: linear-gradient(135deg, var(--warning) 0%, #b45309 100%);
+  background: linear-gradient(135deg, var(--warning) 0%, var(--warning-light) 100%);
 }
 
 .rank-avatar {
@@ -639,7 +641,7 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary) 0%, #15803d 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   color: #fff;
   font-size: 14px;
   font-weight: 700;

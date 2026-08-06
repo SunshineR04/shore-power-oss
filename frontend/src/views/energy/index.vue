@@ -45,8 +45,8 @@
             <el-switch v-model="enableComparison" active-text="对比上期" @change="loadOverview" />
           </div>
           <el-row :gutter="16">
-            <el-col :span="16"><div ref="trendChart" class="chart-area chart-area--trend"></div></el-col>
-            <el-col :span="8"><div ref="deviceChart" class="chart-area chart-area--trend"></div></el-col>
+            <el-col :xs="24" :sm="24" :md="16"><div ref="trendChart" class="chart-area chart-area--trend"></div></el-col>
+            <el-col :xs="24" :sm="24" :md="8"><div ref="deviceChart" class="chart-area chart-area--trend"></div></el-col>
           </el-row>
         </el-card>
 
@@ -78,31 +78,31 @@
         </div>
 
         <div class="balancing-grid">
-          <div class="stat-card" style="--card-accent: #0984e3; border-left-color: #0984e3;">
+          <div class="stat-card" style="--card-accent: #2563eb; border-left-color: #2563eb;">
             <div class="stat-card__icon" style="background: rgba(9,132,227,0.1);">
-              <el-icon :size="20" color="#0984e3"><Cpu /></el-icon>
+              <el-icon :size="20" color="#2563eb"><Cpu /></el-icon>
             </div>
             <div class="stat-card__content">
               <div class="stat-card__label">设备总数</div>
-              <div class="stat-card__value" style="color: #0984e3;">{{ loadDevices.length }}</div>
+              <div class="stat-card__value" style="color: #2563eb;">{{ loadDevices.length }}</div>
             </div>
           </div>
-          <div class="stat-card" style="--card-accent: #e74c3c; border-left-color: #e74c3c;">
+          <div class="stat-card" style="--card-accent: #dc2626; border-left-color: #dc2626;">
             <div class="stat-card__icon" style="background: rgba(231,76,60,0.1);">
-              <el-icon :size="20" color="#e74c3c"><Warning /></el-icon>
+              <el-icon :size="20" color="#dc2626"><Warning /></el-icon>
             </div>
             <div class="stat-card__content">
               <div class="stat-card__label">过载设备</div>
-              <div class="stat-card__value" style="color: #e74c3c;">{{ overloadCount }}</div>
+              <div class="stat-card__value" style="color: #dc2626;">{{ overloadCount }}</div>
             </div>
           </div>
-          <div class="stat-card" style="--card-accent: #8d9db0; border-left-color: #8d9db0;">
+          <div class="stat-card" style="--card-accent: #94a3b8; border-left-color: #94a3b8;">
             <div class="stat-card__icon" style="background: rgba(141,157,176,0.1);">
-              <el-icon :size="20" color="#8d9db0"><Timer /></el-icon>
+              <el-icon :size="20" color="#94a3b8"><Timer /></el-icon>
             </div>
             <div class="stat-card__content">
               <div class="stat-card__label">低负载设备</div>
-              <div class="stat-card__value" style="color: #8d9db0;">{{ lowLoadCount }}</div>
+              <div class="stat-card__value" style="color: #94a3b8;">{{ lowLoadCount }}</div>
             </div>
           </div>
           <div class="stat-card" :style="{'--card-accent': systemLoadColor, 'border-left-color': systemLoadColor}">
@@ -177,6 +177,7 @@
 import { ref, reactive, computed, watch, onMounted, nextTick, onUnmounted } from 'vue'
 import { useChartResize } from '../../composables/useChartResize'
 import echarts from '../../utils/echarts'
+import { CHART_COLORS, CHART_TEXT } from '../../utils/chartTheme'
 import { energyApi } from '../../api'
 import { useDataSync } from '../../composables/useDataSync'
 
@@ -202,18 +203,18 @@ const trendInstance = ref(null)
 const deviceInstance = ref(null)
 const envMetrics = reactive({ totalEnergy: 0, co2Reduction: 0, coalSaved: 0, treeEquivalent: 0, co2Unit: 'kg', coalUnit: 'kgce', treeUnit: '棵' })
 const timeOfUsePrices = ref([
-  { label: '低谷电价', price: '0.45', time: '22:00 - 06:00', color: '#67c23a' },
-  { label: '平段电价', price: '0.65', time: '06:00-08:00, 12:00-18:00', color: '#409eff' },
-  { label: '高峰电价', price: '0.85', time: '08:00-12:00, 18:00-22:00', color: '#f56c6c' }
+  { label: '低谷电价', price: '0.45', time: '22:00 - 06:00', color: CHART_COLORS.success },
+  { label: '平段电价', price: '0.65', time: '06:00-08:00, 12:00-18:00', color: CHART_COLORS.primary },
+  { label: '高峰电价', price: '0.85', time: '08:00-12:00, 18:00-22:00', color: CHART_COLORS.danger }
 ])
 
 const overviewCards = computed(() => [
-  { label: '总能耗', value: formatNum(envMetrics.totalEnergy), unit: 'kWh', color: '#409eff' },
-  { label: '总费用', value: formatNum(totalCost.value), unit: '元', color: '#e6a23c' },
-  { label: 'CO₂减排', value: formatNum(envMetrics.co2Reduction), unit: envMetrics.co2Unit, color: '#67c23a' },
-  { label: '节煤量', value: formatNum(envMetrics.coalSaved), unit: envMetrics.coalUnit, color: '#409eff' },
-  { label: '等效植树', value: envMetrics.treeEquivalent, unit: envMetrics.treeUnit + '/年', color: '#e6a23c' },
-  { label: '日均能耗', value: formatNum(dailyAvgEnergy.value), unit: 'kWh/天', color: '#f56c6c' }
+  { label: '总能耗', value: formatNum(envMetrics.totalEnergy), unit: 'kWh', color: CHART_COLORS.primary },
+  { label: '总费用', value: formatNum(totalCost.value), unit: '元', color: CHART_COLORS.warning },
+  { label: 'CO₂减排', value: formatNum(envMetrics.co2Reduction), unit: envMetrics.co2Unit, color: CHART_COLORS.success },
+  { label: '节煤量', value: formatNum(envMetrics.coalSaved), unit: envMetrics.coalUnit, color: CHART_COLORS.primary },
+  { label: '等效植树', value: envMetrics.treeEquivalent, unit: envMetrics.treeUnit + '/年', color: CHART_COLORS.warning },
+  { label: '日均能耗', value: formatNum(dailyAvgEnergy.value), unit: 'kWh/天', color: CHART_COLORS.danger }
 ])
 
 const totalCost = ref(0)
@@ -275,9 +276,9 @@ async function loadOverview() {
     if (priceRes.data) {
       const d = priceRes.data
       timeOfUsePrices.value = [
-        { label: '低谷电价', price: d.offPeak || '0.45', time: '22:00 - 06:00', color: '#67c23a' },
-        { label: '平段电价', price: d.midPeak || '0.65', time: '06:00-08:00, 12:00-18:00', color: '#409eff' },
-        { label: '高峰电价', price: d.peak || '0.85', time: '08:00-12:00, 18:00-22:00', color: '#f56c6c' }
+        { label: '低谷电价', price: d.offPeak || '0.45', time: '22:00 - 06:00', color: CHART_COLORS.success },
+        { label: '平段电价', price: d.midPeak || '0.65', time: '06:00-08:00, 12:00-18:00', color: CHART_COLORS.primary },
+        { label: '高峰电价', price: d.peak || '0.85', time: '08:00-12:00, 18:00-22:00', color: CHART_COLORS.danger }
       ]
     }
   } catch {}
@@ -293,18 +294,18 @@ function renderTrend(data) {
   if (!trendInstance.value) trendInstance.value = echarts.init(trendChart.value)
   trendInstance.value.setOption({
     backgroundColor: 'transparent',
-    textStyle: { color: '#94a3b8' },
-    title: { text: '能耗趋势', left: 'center', top: 8, textStyle: { color: '#f1f5f9' } },
+    textStyle: { color: CHART_TEXT },
+    title: { text: '能耗趋势', left: 'center', top: 8, textStyle: { color: CHART_TEXT } },
     tooltip: { trigger: 'axis' },
-    legend: { data: ['能耗(kWh)', '费用(元)'], top: 35, left: 'center', textStyle: { color: '#94a3b8' } },
+    legend: { data: ['能耗(kWh)', '费用(元)'], top: 35, left: 'center', textStyle: { color: CHART_TEXT } },
     grid: { left: 60, right: 60, bottom: 60, top: 62 },
     xAxis: { type: 'category', data: data.map(d => d.statDate || d.stat_date), axisLabel: { rotate: 30 } },
     yAxis: [{ type: 'value', name: 'kWh' }, { type: 'value', name: '元' }],
     series: [
       { name: '能耗(kWh)', type: 'bar', data: data.map(d => Number(d.totalEnergy || 0)),
-        itemStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: '#409eff' }, { offset: 1, color: '#79bbff' }]), borderRadius: [6, 6, 0, 0] } },
+        itemStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: CHART_COLORS.primary }, { offset: 1, color: '#5b8def' }]), borderRadius: [6, 6, 0, 0] } },
       { name: '费用(元)', type: 'line', yAxisIndex: 1, data: data.map(d => Number(d.totalCost || 0)),
-        itemStyle: { color: '#e6a23c' }, smooth: true }
+        itemStyle: { color: CHART_COLORS.warning }, smooth: true }
     ]
   }, true)
 }
@@ -323,20 +324,20 @@ function renderComparisonChart(data) {
 
   trendInstance.value.setOption({
     backgroundColor: 'transparent',
-    textStyle: { color: '#94a3b8' },
-    title: { text: '能耗趋势（对比上期）', left: 'center', top: 8, textStyle: { color: '#f1f5f9' } },
+    textStyle: { color: CHART_TEXT },
+    title: { text: '能耗趋势（对比上期）', left: 'center', top: 8, textStyle: { color: CHART_TEXT } },
     tooltip: { trigger: 'axis' },
-    legend: { data: ['本期能耗', '上期能耗', '本期费用'], top: 35, left: 'center', textStyle: { color: '#94a3b8' } },
+    legend: { data: ['本期能耗', '上期能耗', '本期费用'], top: 35, left: 'center', textStyle: { color: CHART_TEXT } },
     grid: { left: 60, right: 60, bottom: 60, top: 62 },
     xAxis: { type: 'category', data: currDates, axisLabel: { rotate: 30 } },
     yAxis: [{ type: 'value', name: 'kWh' }, { type: 'value', name: '元' }],
     series: [
       { name: '本期能耗', type: 'bar', data: current.map(d => Number(d.totalEnergy || 0)),
-        itemStyle: { color: '#409eff', borderRadius: [6, 6, 0, 0] } },
+        itemStyle: { color: CHART_COLORS.primary, borderRadius: [6, 6, 0, 0] } },
       { name: '上期能耗', type: 'bar', data: currDates.map(d => prevMap[d] || '-'),
-        itemStyle: { color: '#334155', borderRadius: [6, 6, 0, 0] } },
+        itemStyle: { color: '#94a3b8', borderRadius: [6, 6, 0, 0] } },
       { name: '本期费用', type: 'line', yAxisIndex: 1, data: current.map(d => Number(d.totalCost || 0)),
-        itemStyle: { color: '#e6a23c' }, smooth: true }
+        itemStyle: { color: CHART_COLORS.warning }, smooth: true }
     ]
   }, true)
 }
@@ -352,16 +353,16 @@ function renderDevice(data) {
     deviceInstance.value = echarts.init(deviceChart.value)
     deviceInstance.value.setOption({
       backgroundColor: 'transparent',
-      textStyle: { color: '#94a3b8' },
-      title: { text: '设备能耗排行', left: 'center', top: 8, textStyle: { color: '#f1f5f9' } },
+      textStyle: { color: CHART_TEXT },
+      title: { text: '设备能耗排行', left: 'center', top: 8, textStyle: { color: CHART_TEXT } },
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-      legend: { data: ['能耗(kWh)', '费用(元)'], top: 35, left: 'center', textStyle: { color: '#94a3b8' } },
-      grid: { left: 130, right: 40, bottom: 30, top: 62 },
+      legend: { data: ['能耗(kWh)', '费用(元)'], top: 35, left: 'center', textStyle: { color: CHART_TEXT } },
+      grid: { left: 120, right: 24, bottom: 30, top: 62, containLabel: true },
       xAxis: { type: 'value' },
       yAxis: { type: 'category' },
       series: [
-        { name: '能耗(kWh)', type: 'bar', itemStyle: { color: '#67c23a', borderRadius: [0, 6, 6, 0] } },
-        { name: '费用(元)', type: 'bar', itemStyle: { color: '#e6a23c', borderRadius: [0, 6, 6, 0] } }
+        { name: '能耗(kWh)', type: 'bar', itemStyle: { color: CHART_COLORS.success, borderRadius: [0, 6, 6, 0] } },
+        { name: '费用(元)', type: 'bar', itemStyle: { color: CHART_COLORS.warning, borderRadius: [0, 6, 6, 0] } }
       ]
     })
   }
@@ -392,9 +393,9 @@ const systemLoadRate = computed(() => {
   return Math.round((total / loadDevices.value.length) * 100)
 })
 const systemLoadColor = computed(() => {
-  if (systemLoadRate.value > 80) return '#f56c6c'
-  if (systemLoadRate.value < 30) return '#909399'
-  return '#67c23a'
+  if (systemLoadRate.value > 80) return CHART_COLORS.danger
+  if (systemLoadRate.value < 30) return '#94a3b8'
+  return CHART_COLORS.success
 })
 
 const filteredLoadDevices = computed(() => {
@@ -450,8 +451,8 @@ function renderHeatmap() {
 
   heatmapInstance.value.setOption({
     backgroundColor: 'transparent',
-    textStyle: { color: '#94a3b8' },
-    title: { text: '24小时设备利用率', left: 'center', textStyle: { color: '#f1f5f9' } },
+    textStyle: { color: CHART_TEXT },
+    title: { text: '24小时设备利用率', left: 'center', textStyle: { color: CHART_TEXT } },
     tooltip: { formatter: p => {
       // 动态数据 HTML 转义，防止存储型 XSS
       const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
@@ -461,16 +462,16 @@ function renderHeatmap() {
     xAxis: { type: 'category', data: hours, splitArea: { show: true } },
     yAxis: { type: 'category', data: devices.map(d => d.deviceName), splitArea: { show: true } },
     visualMap: { min: 0, max: 1, calculable: true, orient: 'horizontal', left: 'center', bottom: 0,
-      inRange: { color: ['#0e1525', '#1e3a5f', '#409eff', '#faad14', '#ff4d4f'] } },
-    series: [{ type: 'heatmap', data, label: { show: false }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' } } }]
+      inRange: { color: ['#eef2f7', '#93b4f4', CHART_COLORS.primary, '#faad14', '#ff4d4f'] } },
+    series: [{ type: 'heatmap', data, label: { show: false }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(15,23,42,0.15)' } } }]
   })
 }
 
 function getProgressColor(factor) {
-  if (factor > 0.8) return '#f56c6c'
-  if (factor <= 0) return '#c0c4cc'
-  if (factor < 0.3) return '#909399'
-  return '#67c23a'
+  if (factor > 0.8) return CHART_COLORS.danger
+  if (factor <= 0) return '#94a3b8'
+  if (factor < 0.3) return '#94a3b8'
+  return CHART_COLORS.success
 }
 function getStatusType(factor) {
   if (factor > 0.8) return 'danger'
@@ -1006,7 +1007,7 @@ onUnmounted(() => {
 
 /* Glow effect on active bar */
 .energy-tabs :deep(.el-tabs__active-bar) {
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3), 0 0 4px rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.3), 0 0 4px rgba(37, 99, 235, 0.6);
 }
 
 /* Stat card progress bar dark styling */
@@ -1017,5 +1018,22 @@ onUnmounted(() => {
 
 .stat-card :deep(.el-progress-bar__inner) {
   border-radius: var(--radius-xs);
+}
+
+/* ====== 响应式网格 ====== */
+@media (max-width: 1400px) {
+  .stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .price-grid { grid-template-columns: repeat(2, 1fr); }
+  .balancing-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .price-grid { grid-template-columns: 1fr; }
+  .balancing-grid { grid-template-columns: 1fr; }
 }
 </style>

@@ -37,14 +37,22 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="90">
           <template #default="{ row }">
-            <el-tag :type="statusType[row.status]" size="small">{{ statusMap[row.status] }}</el-tag>
+            <StatusTag :status="row.status" :map="TASK_STATUS" size="small" />
           </template>
         </el-table-column>
         <el-table-column prop="assigneeName" label="指派人" width="100" />
-        <el-table-column prop="planStartTime" label="计划开始" width="155" />
-        <el-table-column prop="planEndTime" label="计划结束" width="155" />
-        <el-table-column prop="actualStartTime" label="实际开始" width="155" />
-        <el-table-column prop="actualEndTime" label="实际结束" width="155" />
+        <el-table-column prop="planStartTime" label="计划开始" width="155">
+            <template #default="{ row }">{{ fmtDateTime(row.planStartTime) }}</template>
+          </el-table-column>
+        <el-table-column prop="planEndTime" label="计划结束" width="155">
+            <template #default="{ row }">{{ fmtDateTime(row.planEndTime) }}</template>
+          </el-table-column>
+        <el-table-column prop="actualStartTime" label="实际开始" width="150">
+            <template #default="{ row }">{{ fmtDateTime(row.actualStartTime) }}</template>
+          </el-table-column>
+        <el-table-column prop="actualEndTime" label="实际结束" width="150">
+            <template #default="{ row }">{{ fmtDateTime(row.actualEndTime) }}</template>
+          </el-table-column>
         <el-table-column prop="completionRemark" label="完成备注" min-width="180" show-overflow-tooltip />
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
@@ -83,8 +91,8 @@
         </el-form-item>
         <el-form-item label="任务内容"><el-input v-model="form.taskContent" type="textarea" :rows="3" /></el-form-item>
         <el-row :gutter="16">
-          <el-col :span="12"><el-form-item label="计划开始"><el-date-picker v-model="form.planStartTime" type="datetime" class="form-select-full" /></el-form-item></el-col>
-          <el-col :span="12"><el-form-item label="计划结束"><el-date-picker v-model="form.planEndTime" type="datetime" class="form-select-full" /></el-form-item></el-col>
+          <el-col :xs="24" :sm="12"><el-form-item label="计划开始"><el-date-picker v-model="form.planStartTime" type="datetime" class="form-select-full" /></el-form-item></el-col>
+          <el-col :xs="24" :sm="12"><el-form-item label="计划结束"><el-date-picker v-model="form.planEndTime" type="datetime" class="form-select-full" /></el-form-item></el-col>
         </el-row>
         <el-form-item label="指派人">
           <el-select v-model="form.assigneeId" filterable clearable class="form-select-full" placeholder="选择运维人员（选填，选后自动指派）">
@@ -105,8 +113,19 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { maintenanceApi, deviceApi, userApi } from '../../api'
 import { useUserStore } from '../../store/user'
+import StatusTag from '../../components/StatusTag.vue'
+import { TASK_STATUS } from '../../utils/status'
 
 const store = useUserStore()
+
+/** ISO 时间 → 本地 'YYYY-MM-DD HH:mm'，兼容后端返回格式 */
+function fmtDateTime(s) {
+  if (!s) return '-'
+  const d = new Date(s)
+  if (isNaN(d.getTime())) return String(s).replace('T', ' ').slice(0, 16)
+  const p = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
+}
 const tableData = ref([])
 const total = ref(0)
 const devices = ref([])
@@ -119,9 +138,7 @@ const form = reactive({ id: null, taskTitle: '', taskType: '', priority: 'MEDIUM
 
 const taskTypeMap = { INSPECTION: '巡检', REPAIR: '维修', REPLACEMENT: '更换', CALIBRATION: '校准' }
 const priorityMap = { LOW: '低', MEDIUM: '中', HIGH: '高', URGENT: '紧急' }
-const priorityType = { LOW: 'info', MEDIUM: '', HIGH: 'warning', URGENT: 'danger' }
-const statusMap = { PENDING: '待处理', ASSIGNED: '已指派', IN_PROGRESS: '进行中', COMPLETED: '已完成', CANCELLED: '已取消' }
-const statusType = { PENDING: 'info', ASSIGNED: 'warning', IN_PROGRESS: 'primary', COMPLETED: 'success', CANCELLED: 'info' }
+const priorityType = { LOW: 'info', MEDIUM: 'primary', HIGH: 'warning', URGENT: 'danger' }
 
 const rules = {
   taskTitle: [{ required: true, message: '请输入任务标题', trigger: 'blur' }],
@@ -260,13 +277,13 @@ async function handleDelete(id) {
   padding: 10px 20px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   border: none;
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
   transition: all var(--transition-normal);
 }
 
 .btn-create:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
 .btn-create:active {
@@ -331,6 +348,6 @@ async function handleDelete(id) {
   border: none;
   border-radius: var(--radius-sm);
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 </style>

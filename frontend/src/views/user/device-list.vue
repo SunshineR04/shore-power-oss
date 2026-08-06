@@ -386,7 +386,7 @@ onMounted(() => {
 
 .device-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(34, 197, 94, 0.12), 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12), 0 4px 12px rgba(15, 23, 42, 0.08);
   border-color: var(--primary);
 }
 
@@ -475,7 +475,7 @@ onMounted(() => {
 
 .btn-reserve:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .btn-disabled {

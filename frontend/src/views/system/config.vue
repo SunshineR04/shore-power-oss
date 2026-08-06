@@ -57,19 +57,19 @@
               </div>
               <div class="config-section-body">
                 <el-row :gutter="20">
-                  <el-col :span="8">
+                  <el-col :xs="24" :sm="12" :md="12" :lg="8">
                     <el-form-item :label="getLabel('electricity.price.off_peak')" label-width="140px">
                       <el-input-number v-model="configForm['electricity.price.off_peak']" :min="0.1" :max="5" :step="0.05" :precision="2" class="config-input-number-sm" />
                     </el-form-item>
                     <div class="config-time-hint">低谷时段 22:00-6:00</div>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :xs="24" :sm="12" :md="12" :lg="8">
                     <el-form-item :label="getLabel('electricity.price.mid_peak')" label-width="140px">
                       <el-input-number v-model="configForm['electricity.price.mid_peak']" :min="0.1" :max="5" :step="0.05" :precision="2" class="config-input-number-sm" />
                     </el-form-item>
                     <div class="config-time-hint">平段时段 6:00-8:00,12:00-18:00</div>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :xs="24" :sm="12" :md="12" :lg="8">
                     <el-form-item :label="getLabel('electricity.price.peak')" label-width="140px">
                       <el-input-number v-model="configForm['electricity.price.peak']" :min="0.1" :max="5" :step="0.05" :precision="2" class="config-input-number-sm" />
                     </el-form-item>
@@ -464,7 +464,7 @@ onMounted(() => {
 }
 
 .config-tab-item--active {
-  background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(34, 197, 94, 0.02) 100%);
+  background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(37, 99, 235, 0.02) 100%);
   border-color: var(--primary);
   box-shadow: 0 0 0 1px var(--primary), var(--shadow-md);
 }

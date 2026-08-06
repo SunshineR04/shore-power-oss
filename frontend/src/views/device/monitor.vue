@@ -25,7 +25,7 @@
 
     <!-- 多设备实时看板 + 告警消息流 -->
     <el-row :gutter="12">
-      <el-col :span="16" class="board-col">
+      <el-col :xs="24" :sm="24" :md="16" class="board-col">
         <el-card class="equal-height-card board-card">
           <template #header>
             <div class="section-header">
@@ -36,7 +36,7 @@
           </template>
           <div class="scrollable-body">
             <el-row :gutter="12">
-              <el-col :span="8" v-for="dev in deviceList" :key="dev.id" class="device-col">
+              <el-col :xs="24" :sm="12" :md="12" :lg="8" v-for="dev in deviceList" :key="dev.id" class="device-col">
                 <div
                   :class="['device-card', { 'device-card--selected': selectedDeviceId === dev.id }]"
                   @click="selectDevice(dev)"
@@ -87,7 +87,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="8" class="board-col">
+      <el-col :xs="24" :sm="24" :md="8" class="board-col">
         <el-card class="equal-height-card board-card">
           <template #header>
             <div class="section-header">
@@ -138,12 +138,12 @@
         </div>
       </template>
       <el-row :gutter="12">
-        <el-col :span="16">
+        <el-col :xs="24" :sm="24" :md="16">
           <div ref="trendChart" class="trend-chart" role="img" aria-label="设备运行趋势图"></div>
         </el-col>
-        <el-col :span="8">
+        <el-col :xs="24" :sm="24" :md="8">
           <el-row :gutter="8">
-            <el-col :span="12" v-for="item in gaugeItems" :key="item.key" class="gauge-col">
+            <el-col :xs="12" :sm="12" :md="12" v-for="item in gaugeItems" :key="item.key" class="gauge-col">
               <div class="gauge-card">
                 <div :ref="el => setGaugeRef(item.key, el)" class="gauge-card__chart"></div>
                 <div class="gauge-card__label">{{ item.label }}</div>
@@ -160,6 +160,8 @@
 import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useChartResize } from '../../composables/useChartResize'
 import echarts from '../../utils/echarts'
+import { CHART_COLORS, CHART_TEXT, CHART_LABEL, CHART_SPLIT_LINE, CHART_TRACK } from '../../utils/chartTheme'
+import { DEVICE_STATUS, statusMeta } from '../../utils/status'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
 import { deviceApi, alarmApi, systemConfigApi } from '../../api'
@@ -207,25 +209,19 @@ const statusStats = reactive([
   { key: 'alarm', label: '待处理告警', value: 0 }
 ])
 
-const getStatusTag = (status) => {
-  const map = { ONLINE: 'success', OFFLINE: 'info', FAULT: 'danger', MAINTENANCE: 'warning', IN_USE: 'primary' }
-  return map[status] || 'info'
-}
-const getStatusText = (status) => {
-  const map = { ONLINE: '在线', OFFLINE: '离线', FAULT: '故障', MAINTENANCE: '维护中', IN_USE: '使用中' }
-  return map[status] || status
-}
+const getStatusTag = (status) => statusMeta(DEVICE_STATUS, status).type
+const getStatusText = (status) => statusMeta(DEVICE_STATUS, status).label
 
 const gaugeItems = computed(() => {
   const dev = selectedDevice.value
   const data = lastDeviceData[dev?.id] || {}
   return [
-    { key: 'voltage', label: '电压(V)', max: (dev?.ratedVoltage || 500) * 1.2, color: '#409eff', val: data.voltage },
-    { key: 'currentVal', label: '电流(A)', max: (dev?.ratedCurrent || 500) * 1.2, color: '#67c23a', val: data.currentVal },
-    { key: 'power', label: '功率(kW)', max: (dev?.ratedPower || 300) * 1.2, color: '#e6a23c', val: data.power },
-    { key: 'temperature', label: '温度(℃)', max: 100, color: '#f56c6c', val: data.temperature },
-    { key: 'powerFactor', label: '功率因数', max: 1, color: '#9b59b6', val: data.powerFactor },
-    { key: 'frequency', label: '频率(Hz)', max: 55, min: 45, color: '#1abc9c', val: data.frequency }
+    { key: 'voltage', label: '电压(V)', max: (dev?.ratedVoltage || 500) * 1.2, color: CHART_COLORS.primary, val: data.voltage },
+    { key: 'currentVal', label: '电流(A)', max: (dev?.ratedCurrent || 500) * 1.2, color: CHART_COLORS.success, val: data.currentVal },
+    { key: 'power', label: '功率(kW)', max: (dev?.ratedPower || 300) * 1.2, color: CHART_COLORS.warning, val: data.power },
+    { key: 'temperature', label: '温度(℃)', max: 100, color: CHART_COLORS.danger, val: data.temperature },
+    { key: 'powerFactor', label: '功率因数', max: 1, color: CHART_COLORS.purple, val: data.powerFactor },
+    { key: 'frequency', label: '频率(Hz)', max: 55, min: 45, color: CHART_COLORS.accent, val: data.frequency }
   ]
 })
 
@@ -410,14 +406,14 @@ function initGauges(devId) {
     gaugeCharts[key] = chart
     chart.setOption({
       backgroundColor: 'transparent',
-      textStyle: { color: '#94a3b8' },
+      textStyle: { color: CHART_LABEL },
       series: [{
         type: 'gauge',
         startAngle: 210, endAngle: -30,
         min: item.min || 0, max: item.max,
         pointer: { show: true, length: '50%', width: 3 },
         progress: { show: true, width: 8, roundCap: true, itemStyle: { color: item.color } },
-        axisLine: { lineStyle: { width: 8, color: [[1, '#1e293b']] } },
+        axisLine: { lineStyle: { width: 8, color: [[1, CHART_TRACK]] } },
         axisTick: { show: false },
         splitLine: { show: false },
         axisLabel: { show: false },
@@ -494,7 +490,7 @@ function renderTrend(data) {
     trendChartInstance = echarts.init(trendChart.value)
     trendChartInstance.setOption({
       backgroundColor: 'transparent',
-      textStyle: { color: '#94a3b8' },
+      textStyle: { color: CHART_TEXT },
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'cross' },
@@ -518,23 +514,23 @@ function renderTrend(data) {
       ],
       xAxis: { type: 'category', boundaryGap: false },
       yAxis: [
-        { type: 'value', name: '电压/电流/功率', position: 'left', splitLine: { lineStyle: { type: 'dashed', color: '#1a2236' } } },
+        { type: 'value', name: '电压/电流/功率', position: 'left', splitLine: { lineStyle: { type: 'dashed', color: CHART_SPLIT_LINE } } },
         { type: 'value', name: '温度/功率因数', position: 'right', splitLine: { show: false } }
       ],
       series: [
         { name: '电压(V)', type: 'line', smooth: true, yAxisIndex: 0, symbol: 'circle', symbolSize: 3,
-          lineStyle: { color: '#409eff', width: 1.5 }, itemStyle: { color: '#409eff' },
-          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(64,158,255,0.2)' }, { offset: 1, color: 'rgba(64,158,255,0.02)' }] } } },
+          lineStyle: { color: CHART_COLORS.primary, width: 1.5 }, itemStyle: { color: CHART_COLORS.primary },
+          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(37,99,235,0.15)' }, { offset: 1, color: 'rgba(37,99,235,0.02)' }] } } },
         { name: '电流(A)', type: 'line', smooth: true, yAxisIndex: 0, symbol: 'circle', symbolSize: 3,
-          lineStyle: { color: '#67c23a', width: 1.5 }, itemStyle: { color: '#67c23a' },
-          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(103,194,58,0.15)' }, { offset: 1, color: 'rgba(103,194,58,0.02)' }] } } },
+          lineStyle: { color: CHART_COLORS.success, width: 1.5 }, itemStyle: { color: CHART_COLORS.success },
+          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(16,163,74,0.12)' }, { offset: 1, color: 'rgba(16,163,74,0.02)' }] } } },
         { name: '功率(kW)', type: 'line', smooth: true, yAxisIndex: 0, symbol: 'circle', symbolSize: 3,
-          lineStyle: { color: '#e6a23c', width: 1.5 }, itemStyle: { color: '#e6a23c' },
-          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(230,162,60,0.15)' }, { offset: 1, color: 'rgba(230,162,60,0.02)' }] } } },
+          lineStyle: { color: CHART_COLORS.warning, width: 1.5 }, itemStyle: { color: CHART_COLORS.warning },
+          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(245,158,11,0.12)' }, { offset: 1, color: 'rgba(245,158,11,0.02)' }] } } },
         { name: '温度(℃)', type: 'line', smooth: true, yAxisIndex: 1, symbol: 'diamond', symbolSize: 4,
-          lineStyle: { color: '#f56c6c', width: 1.5, type: 'dashed' }, itemStyle: { color: '#f56c6c' } },
+          lineStyle: { color: CHART_COLORS.danger, width: 1.5, type: 'dashed' }, itemStyle: { color: CHART_COLORS.danger } },
         { name: '功率因数', type: 'line', smooth: true, yAxisIndex: 1, symbol: 'triangle', symbolSize: 4,
-          lineStyle: { color: '#9b59b6', width: 1.5, type: 'dotted' }, itemStyle: { color: '#9b59b6' } }
+          lineStyle: { color: CHART_COLORS.purple, width: 1.5, type: 'dotted' }, itemStyle: { color: CHART_COLORS.purple } }
       ]
     })
   }
@@ -569,7 +565,8 @@ onUnmounted(() => {
 
 useChartResize([
   () => trendChartInstance,
-  () => gaugeCharts[selectedDeviceId.value] || null
+  // 仪表盘组：按指标名索引，需整体返回数组才能统一 resize
+  () => Object.values(gaugeCharts)
 ])
 </script>
 
@@ -583,12 +580,14 @@ useChartResize([
 
 .stat-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 12px;
 }
 
 .stat-card {
-  flex: 1;
+  flex: 1 1 160px;
+  min-width: 150px;
   display: flex;
   align-items: center;
   gap: 14px;
