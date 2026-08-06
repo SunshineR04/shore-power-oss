@@ -71,3 +71,6 @@ target/
 build/
 out/
 dist/
+
+# === Playwright MCP 快照 ===
+.playwright-mcp/
