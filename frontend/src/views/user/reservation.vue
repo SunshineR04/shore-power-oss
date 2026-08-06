@@ -152,6 +152,7 @@ defineOptions({ name: 'UserReservations' })
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { reservationApi } from '../../api'
+import { getStatusText, getStatusType, formatCost } from './reservation-utils'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WarningFilled } from '@element-plus/icons-vue'
 
@@ -180,16 +181,6 @@ const loadReservations = async () => {
   } catch (e) {
     ElMessage.error('加载预约列表失败')
   }
-}
-
-const getStatusType = (status) => {
-  const map = { PENDING: 'warning', CONFIRMED: 'primary', IN_USE: 'success', PENDING_PAYMENT: 'danger', COMPLETED: 'info', CANCELLED: 'info' }
-  return map[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const map = { PENDING: '待确认', CONFIRMED: '已确认', IN_USE: '使用中', PENDING_PAYMENT: '待支付', COMPLETED: '已完成', CANCELLED: '已取消' }
-  return map[status] || status
 }
 
 const handleConfirm = async (id) => {
@@ -229,11 +220,6 @@ const handleEnd = async (id) => {
   } catch (e) {
     ElMessage.error('操作失败')
   }
-}
-
-const formatCost = (val) => {
-  if (val === null || val === undefined) return '0.00'
-  return Number(val).toFixed(2)
 }
 
 const handlePayNow = async (row) => {

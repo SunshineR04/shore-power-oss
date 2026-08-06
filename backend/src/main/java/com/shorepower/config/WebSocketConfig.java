@@ -87,12 +87,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      * 校验成功将 userId 和 username 存入 session 属性，供后续 @MessageMapping 使用
      */
     /**
-     * 需要 ADMIN/OPERATOR 角色的全局主题（设备遥测、告警、状态属于运维数据）
+     * 订阅鉴权委托给 TopicAccessPolicy（独立可测）：
+     *   1. 运维类全局主题（设备数据/告警/状态）仅 ADMIN/OPERATOR 可订阅
+     *   2. 用户个性化主题（notification/maintenance-assigned）中的 userId 必须与当前会话一致
      */
-    private static final List<String> STAFF_ONLY_TOPICS = List.of(
-        "/topic/device-data", "/topic/alarm", "/topic/alarm-resolved", "/topic/device-status"
-    );
-
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -120,31 +118,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     accessor.getSessionAttributes().put("role", jwtUtil.getRole(token));
                 }
 
-                // 订阅鉴权：
-                // 1. 运维类全局主题（设备数据/告警/状态）仅 ADMIN/OPERATOR 可订阅
-                // 2. 用户个性化主题（notification/maintenance-assigned）中的 userId 必须与当前会话一致
                 if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-                    String dest = accessor.getDestination();
-                    if (dest != null) {
-                        String role = (String) accessor.getSessionAttributes().get("role");
-                        boolean staff = "ADMIN".equals(role) || "OPERATOR".equals(role);
-                        if (STAFF_ONLY_TOPICS.stream().anyMatch(dest::startsWith) && !staff) {
-                            throw new IllegalArgumentException("无权订阅此主题");
-                        }
-                        if (dest.startsWith("/topic/notification/")
-                                || dest.startsWith("/topic/maintenance-assigned/")) {
-                            Long sessionUserId = (Long) accessor.getSessionAttributes().get("userId");
-                            String[] parts = dest.split("/");
-                            try {
-                                Long targetUserId = Long.valueOf(parts[parts.length - 1]);
-                                if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
-                                    throw new IllegalArgumentException("无权订阅此主题");
-                                }
-                            } catch (NumberFormatException e) {
-                                throw new IllegalArgumentException("非法的订阅主题");
-                            }
-                        }
-                    }
+                    Long sessionUserId = (Long) accessor.getSessionAttributes().get("userId");
+                    String role = (String) accessor.getSessionAttributes().get("role");
+                    TopicAccessPolicy.checkSubscription(accessor.getDestination(), sessionUserId, role);
                 }
                 return message;
             }
