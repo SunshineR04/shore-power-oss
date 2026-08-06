@@ -1,0 +1,63 @@
+- generic [ref=e1]:
+  - generic [ref=e48]:
+    - complementary [ref=e49]:
+      - generic [ref=e50]: 岸电运维
+      - menubar [ref=e57]:
+        - menuitem "首页" [ref=e58] [cursor=pointer]
+        - menuitem "我的船舶" [ref=e61] [cursor=pointer]
+        - menuitem "我的预约" [ref=e66] [cursor=pointer]
+      - generic [ref=e71]: 系统在线
+    - generic [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - button [ref=e79] [cursor=pointer]
+          - navigation "面包屑" [ref=e83]:
+            - link "我的船舶" [ref=e166]
+        - button "测 测试用户 普通用户" [ref=e88] [cursor=pointer]:
+          - generic [ref=e89]: 测
+          - generic [ref=e90]:
+            - generic [ref=e91]: 测试用户
+            - generic [ref=e92]: 普通用户
+      - main [ref=e95]:
+        - generic [ref=e167]:
+          - generic [ref=e169]:
+            - heading "我的船舶" [level=1] [ref=e170]
+            - paragraph [ref=e171]: 管理您的船舶信息，维护船舶档案与状态
+          - generic [ref=e173]:
+            - textbox "搜索船名或MMSI" [ref=e180]
+            - button "新增船舶" [active] [ref=e181] [cursor=pointer]
+          - generic [ref=e396]:
+            - generic [ref=e397]:
+              - generic [ref=e402]:
+                - heading "测试货船" [level=3] [ref=e403]
+                - text: 货船
+              - generic [ref=e404]: 启用
+            - generic [ref=e407]:
+              - generic [ref=e408]:
+                - generic [ref=e409]: MMSI
+                - generic [ref=e410]: "-"
+              - generic [ref=e411]:
+                - generic [ref=e412]: IMO编号
+                - generic [ref=e413]: "-"
+              - generic [ref=e414]:
+                - generic [ref=e415]: 船籍
+                - generic [ref=e416]: 中国
+              - generic [ref=e417]:
+                - generic [ref=e418]: 总吨位
+                - generic [ref=e419]: 5000 GT
+              - generic [ref=e420]:
+                - generic [ref=e421]: 电气参数
+                - generic [ref=e422]: "- / -"
+              - generic [ref=e423]:
+                - generic [ref=e424]: 尺度
+                - generic [ref=e425]: 100m × 16m / 吃水5.5m
+              - generic [ref=e426]:
+                - generic [ref=e427]: 适用桩
+                - generic [ref=e428]: 内河货船桩(130kW)、沿海货船桩(260kW)
+            - generic [ref=e429]:
+              - button "编辑" [ref=e430] [cursor=pointer]
+              - button "禁用" [ref=e432] [cursor=pointer]
+              - button "删除" [ref=e434] [cursor=pointer]
+  - text: "* *"
+  - alert [ref=e436]:
+    - paragraph [ref=e440]: 新增成功

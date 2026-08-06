@@ -17,8 +17,8 @@ public class CacheConfig {
         manager.setCaffeine(Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .maximumSize(100));
-        // 用户认证状态缓存：TTL 较短，保证禁用/改角色/改密码后快速生效
-        manager.setCacheNames(java.util.List.of("configs", "userAuth"));
+        // 注册全部业务缓存：configs/userAuth(认证)/deviceTypes(设备类型)/prices(电价)
+        manager.setCacheNames(java.util.List.of("configs", "userAuth", "deviceTypes", "prices"));
         return manager;
     }
 }

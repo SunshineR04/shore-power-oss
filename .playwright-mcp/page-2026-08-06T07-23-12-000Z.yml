@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e48]:
+    - complementary [ref=e49]:
+      - generic [ref=e50]: 岸电运维
+      - menubar [ref=e57]:
+        - menuitem "首页" [ref=e58] [cursor=pointer]
+        - menuitem "我的船舶" [ref=e61] [cursor=pointer]
+        - menuitem "我的预约" [ref=e66] [cursor=pointer]
+      - generic [ref=e71]: 系统在线
+    - generic [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - button [ref=e79] [cursor=pointer]
+          - navigation "面包屑" [ref=e83]:
+            - link "充电桩预约" [ref=e85]
+        - button "测 测试用户 普通用户" [ref=e88] [cursor=pointer]:
+          - generic [ref=e89]: 测
+          - generic [ref=e90]:
+            - generic [ref=e91]: 测试用户
+            - generic [ref=e92]: 普通用户
+      - main [ref=e95]:
+        - generic [ref=e96]:
+          - generic [ref=e98]:
+            - heading "充电桩预约" [level=1] [ref=e99]
+            - paragraph [ref=e100]: 查看可用充电桩并预约使用
+          - generic [ref=e101]:
+            - generic [ref=e102]:
+              - generic [ref=e103]: "0"
+              - generic [ref=e104]: 可用充电桩
+            - generic [ref=e106]:
+              - generic [ref=e107]: "0"
+              - generic [ref=e108]: 进行中预约
+            - generic [ref=e110]:
+              - generic [ref=e111]: 0 次
+              - generic [ref=e112]: 累计使用
+            - generic [ref=e114]:
+              - generic [ref=e115]: "0"
+              - generic [ref=e116]: 我的船舶
+            - generic [ref=e117]:
+              - button "管理船舶" [ref=e118] [cursor=pointer]
+              - button "我的预约" [ref=e123] [cursor=pointer]
+          - generic [ref=e130]:
+            - paragraph [ref=e149]: 请先添加船舶，系统将为您展示匹配的充电桩
+            - button "添加船舶" [ref=e151] [cursor=pointer]
+  - alert [ref=e156]:
+    - paragraph [ref=e160]: 登录成功
+  - alert [ref=e161]:
+    - paragraph [ref=e165]: 权限不足

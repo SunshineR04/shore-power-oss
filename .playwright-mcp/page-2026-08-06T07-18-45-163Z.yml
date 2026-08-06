@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2010]:
+    - complementary [ref=e2011]:
+      - generic [ref=e2012]: 岸电运维
+      - menubar [ref=e2019]:
+        - menuitem "首页" [ref=e2020] [cursor=pointer]
+        - menuitem "我的船舶" [ref=e2023] [cursor=pointer]
+        - menuitem "我的预约" [ref=e2028] [cursor=pointer]
+      - generic [ref=e2033]: 系统在线
+    - generic [ref=e2038]:
+      - generic [ref=e2039]:
+        - generic [ref=e2040]:
+          - button [ref=e2041] [cursor=pointer]
+          - navigation "面包屑" [ref=e2045]:
+            - link "我的船舶" [ref=e2163]
+        - button "测 测试用户 普通用户" [ref=e2050] [cursor=pointer]:
+          - generic [ref=e2051]: 测
+          - generic [ref=e2052]:
+            - generic [ref=e2053]: 测试用户
+            - generic [ref=e2054]: 普通用户
+      - main [ref=e2057]:
+        - generic [ref=e2164]:
+          - generic [ref=e2166]:
+            - heading "我的船舶" [level=1] [ref=e2167]
+            - paragraph [ref=e2168]: 管理您的船舶信息，维护船舶档案与状态
+          - generic [ref=e2170]:
+            - textbox "搜索船名或MMSI" [ref=e2177]
+            - button "新增船舶" [ref=e2178] [cursor=pointer]
+          - paragraph [ref=e2202]: 暂无船舶信息，点击右上角新增
+  - alert [ref=e2203]:
+    - paragraph [ref=e2207]: Cannot find cache named 'deviceTypes' for Builder[public java.util.Map com.shorepower.service.DeviceTypeService.getDeviceTypes()] caches=[deviceTypes] | key='' | keyGenerator='' | cacheManager='' | cacheResolver='' | condition='' | unless='' | sync='false'

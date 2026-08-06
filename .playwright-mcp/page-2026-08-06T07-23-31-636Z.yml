@@ -1,0 +1,28 @@
+- generic [ref=e48]:
+  - complementary [ref=e49]:
+    - generic [ref=e50]: 岸电运维
+    - menubar [ref=e57]:
+      - menuitem "首页" [ref=e58] [cursor=pointer]
+      - menuitem "我的船舶" [active] [ref=e61] [cursor=pointer]
+      - menuitem "我的预约" [ref=e66] [cursor=pointer]
+    - generic [ref=e71]: 系统在线
+  - generic [ref=e76]:
+    - generic [ref=e77]:
+      - generic [ref=e78]:
+        - button [ref=e79] [cursor=pointer]
+        - navigation "面包屑" [ref=e83]:
+          - link "我的船舶" [ref=e166]
+      - button "测 测试用户 普通用户" [ref=e88] [cursor=pointer]:
+        - generic [ref=e89]: 测
+        - generic [ref=e90]:
+          - generic [ref=e91]: 测试用户
+          - generic [ref=e92]: 普通用户
+    - main [ref=e95]:
+      - generic [ref=e167]:
+        - generic [ref=e169]:
+          - heading "我的船舶" [level=1] [ref=e170]
+          - paragraph [ref=e171]: 管理您的船舶信息，维护船舶档案与状态
+        - generic [ref=e173]:
+          - textbox "搜索船名或MMSI" [ref=e180]
+          - button "新增船舶" [ref=e181] [cursor=pointer]
+        - paragraph [ref=e205]: 暂无船舶信息，点击右上角新增

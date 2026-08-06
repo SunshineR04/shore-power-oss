@@ -143,7 +143,10 @@ const pendingAlarms = ref(0)
 const unreadNotifs = ref(0)
 
 let timer = null
+// 待处理告警为运维数据：仅 ADMIN/OPERATOR 轮询，普通用户跳过（避免 403 刷屏）
+const isStaff = ['ADMIN', 'OPERATOR'].includes(store.userInfo?.role)
 const fetchAlarms = async () => {
+  if (!isStaff) return
   try {
     const res = await alarmApi.pendingCount()
     pendingAlarms.value = res.data || 0

@@ -1,0 +1,119 @@
+- generic [ref=e1]:
+  - generic [ref=e48]:
+    - complementary [ref=e49]:
+      - generic [ref=e50]: 岸电运维
+      - menubar [ref=e57]:
+        - menuitem "首页" [ref=e58] [cursor=pointer]
+        - menuitem "我的船舶" [ref=e61] [cursor=pointer]
+        - menuitem "我的预约" [ref=e66] [cursor=pointer]
+      - generic [ref=e71]: 系统在线
+    - generic [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - button [ref=e79] [cursor=pointer]
+          - navigation "面包屑" [ref=e83]:
+            - link "充电桩预约" [ref=e441]
+        - button "测 测试用户 普通用户" [ref=e88] [cursor=pointer]:
+          - generic [ref=e89]: 测
+          - generic [ref=e90]:
+            - generic [ref=e91]: 测试用户
+            - generic [ref=e92]: 普通用户
+      - main [ref=e95]:
+        - generic [ref=e442]:
+          - generic [ref=e444]:
+            - heading "充电桩预约" [level=1] [ref=e445]
+            - paragraph [ref=e446]: 查看可用充电桩并预约使用
+          - generic [ref=e447]:
+            - generic [ref=e448]:
+              - generic [ref=e449]: "3"
+              - generic [ref=e450]: 可用充电桩
+            - generic [ref=e452]:
+              - generic [ref=e453]: "0"
+              - generic [ref=e454]: 进行中预约
+            - generic [ref=e456]:
+              - generic [ref=e457]: 0 次
+              - generic [ref=e458]: 累计使用
+            - generic [ref=e460]:
+              - generic [ref=e461]: "1"
+              - generic [ref=e462]: 我的船舶
+            - generic [ref=e463]:
+              - button "管理船舶" [ref=e464] [cursor=pointer]
+              - button "我的预约" [ref=e469] [cursor=pointer]
+          - generic [ref=e474]:
+            - generic [ref=e476]:
+              - generic [ref=e477]: 充电桩
+              - generic [ref=e480] [cursor=pointer]:
+                - generic:
+                  - combobox [ref=e482]
+                  - generic [ref=e483]: 全部类型
+            - generic [ref=e489]:
+              - generic [ref=e491] [cursor=pointer]:
+                - generic [ref=e492]:
+                  - generic [ref=e493]: 1号内河货船桩
+                  - generic [ref=e494]: 在线
+                - generic [ref=e496]: 长江码头B区泊位1
+                - generic [ref=e501]:
+                  - generic [ref=e502]: 内河货船桩(130kW)
+                  - generic [ref=e504]: 130kW
+                  - generic [ref=e506]: 380V
+                - generic [ref=e508]: 适用：散货船、货船、其他
+                - button "立即预约" [ref=e509]
+              - generic [ref=e512] [cursor=pointer]:
+                - generic [ref=e513]:
+                  - generic [ref=e514]: 2号内河货船桩
+                  - generic [ref=e515]: 在线
+                - generic [ref=e517]: 长江码头B区泊位2
+                - generic [ref=e522]:
+                  - generic [ref=e523]: 内河货船桩(130kW)
+                  - generic [ref=e525]: 130kW
+                  - generic [ref=e527]: 380V
+                - generic [ref=e529]: 适用：散货船、货船、其他
+                - button "立即预约" [ref=e530]
+              - generic [ref=e533] [cursor=pointer]:
+                - generic [ref=e534]:
+                  - generic [ref=e535]: 1号沿海货船桩
+                  - generic [ref=e536]: 在线
+                - generic [ref=e538]: 深水港C区泊位1
+                - generic [ref=e543]:
+                  - generic [ref=e544]: 沿海货船桩(260kW)
+                  - generic [ref=e546]: 260kW
+                  - generic [ref=e548]: 380V
+                - generic [ref=e550]: 适用：散货船、货船、滚装船
+                - button "立即预约" [ref=e551]
+  - dialog "预约充电桩" [ref=e554]:
+    - generic [ref=e555]:
+      - banner [ref=e556]:
+        - heading "预约充电桩" [level=2] [ref=e557]
+        - button "关闭此对话框" [ref=e558] [cursor=pointer]
+      - generic [ref=e563]:
+        - group "设备" [ref=e564]:
+          - generic [ref=e566]: 1号内河货船桩
+        - generic [ref=e567]:
+          - generic [ref=e568]: 选择船舶
+          - generic [ref=e571] [cursor=pointer]:
+            - generic:
+              - combobox "选择船舶" [ref=e573]
+              - generic [ref=e574]: 测试货船
+        - generic [ref=e579]:
+          - generic [ref=e580]: 开始日期
+          - combobox "开始日期" [ref=e588]: 2026-08-06
+        - generic [ref=e589]:
+          - generic [ref=e590]: 开始时段
+          - generic [ref=e593] [cursor=pointer]:
+            - generic:
+              - combobox "开始时段" [ref=e595]
+              - generic [ref=e596]: 16:00
+        - generic [ref=e601]:
+          - generic [ref=e602]: 结束日期
+          - combobox "结束日期" [ref=e610]: 2026-08-06
+        - generic [ref=e611]:
+          - generic [ref=e612]: 结束时段
+          - generic [ref=e615] [cursor=pointer]:
+            - generic:
+              - combobox "结束时段" [active] [ref=e617]
+              - generic [ref=e618]: 18:00
+        - group "预约时段" [ref=e723]:
+          - generic [ref=e725]: 2026-08-06 16:00 - 18:00
+      - contentinfo [ref=e623]:
+        - button "取消" [ref=e624] [cursor=pointer]
+        - button "确认预约" [ref=e626] [cursor=pointer]

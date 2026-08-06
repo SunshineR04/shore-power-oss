@@ -1,0 +1,109 @@
+- generic [ref=e1]:
+  - generic [ref=e2010]:
+    - complementary [ref=e2011]:
+      - generic [ref=e2012]: 岸电运维
+      - menubar [ref=e2019]:
+        - menuitem "首页" [ref=e2020] [cursor=pointer]
+        - menuitem "我的船舶" [ref=e2023] [cursor=pointer]
+        - menuitem "我的预约" [ref=e2028] [cursor=pointer]
+      - generic [ref=e2033]: 系统在线
+    - generic [ref=e2038]:
+      - generic [ref=e2039]:
+        - generic [ref=e2040]:
+          - button [ref=e2041] [cursor=pointer]
+          - navigation "面包屑" [ref=e2045]:
+            - link "我的船舶" [ref=e2163]
+        - button "测 测试用户 普通用户" [ref=e2050] [cursor=pointer]:
+          - generic [ref=e2051]: 测
+          - generic [ref=e2052]:
+            - generic [ref=e2053]: 测试用户
+            - generic [ref=e2054]: 普通用户
+      - main [ref=e2057]:
+        - generic [ref=e2164]:
+          - generic [ref=e2166]:
+            - heading "我的船舶" [level=1] [ref=e2167]
+            - paragraph [ref=e2168]: 管理您的船舶信息，维护船舶档案与状态
+          - generic [ref=e2170]:
+            - textbox "搜索船名或MMSI" [ref=e2177]
+            - button "新增船舶" [ref=e2178] [cursor=pointer]
+          - paragraph [ref=e2202]: 暂无船舶信息，点击右上角新增
+  - tooltip "无数据" [ref=e2377]
+  - dialog "新增船舶" [ref=e2209]:
+    - generic [ref=e2210]:
+      - banner [ref=e2211]:
+        - heading "新增船舶" [level=2] [ref=e2212]
+        - button "关闭此对话框" [ref=e2213] [cursor=pointer]
+      - generic [ref=e2218]:
+        - generic [ref=e2219]:
+          - generic [ref=e2221]:
+            - generic [ref=e2222]: "* 船名"
+            - textbox "* 船名" [ref=e2226]:
+              - /placeholder: 请输入船名
+              - text: 测试货船
+          - generic [ref=e2228]:
+            - generic [ref=e2229]: "* 船舶类型"
+            - generic [ref=e2232] [cursor=pointer]:
+              - generic:
+                - combobox "* 船舶类型" [expanded] [active] [ref=e2234]
+                - generic [ref=e2235]: 请选择船舶类型
+        - generic [ref=e2240]:
+          - generic [ref=e2242]:
+            - generic [ref=e2243]: MMSI码
+            - textbox "MMSI码" [ref=e2247]:
+              - /placeholder: 9位数字
+              - text: "413123456"
+          - generic [ref=e2249]:
+            - generic [ref=e2250]: IMO编号
+            - textbox "IMO编号" [ref=e2254]:
+              - /placeholder: IMO开头的编号
+        - generic [ref=e2255]:
+          - generic [ref=e2257]:
+            - generic [ref=e2258]: 船籍
+            - textbox "船籍" [ref=e2262]:
+              - /placeholder: 如：中国
+              - text: 中国
+          - generic [ref=e2264]:
+            - generic [ref=e2265]: 总吨位(GT)
+            - generic [ref=e2267]:
+              - button "减少数值" [ref=e2268] [cursor=pointer]
+              - button "增加数值" [ref=e2272] [cursor=pointer]
+              - spinbutton "总吨位(GT)" [ref=e2278]
+        - generic [ref=e2279]:
+          - generic [ref=e2281]:
+            - generic [ref=e2282]: 船长(米)
+            - generic [ref=e2284]:
+              - button "减少数值" [ref=e2285] [cursor=pointer]
+              - button "增加数值" [ref=e2289] [cursor=pointer]
+              - spinbutton "船长(米)" [ref=e2295]
+          - generic [ref=e2297]:
+            - generic [ref=e2298]: 船宽(米)
+            - generic [ref=e2300]:
+              - button "减少数值" [ref=e2301] [cursor=pointer]
+              - button "增加数值" [ref=e2305] [cursor=pointer]
+              - spinbutton "船宽(米)" [ref=e2311]
+        - generic [ref=e2314]:
+          - generic [ref=e2315]: 吃水(米)
+          - generic [ref=e2317]:
+            - button "减少数值" [ref=e2318] [cursor=pointer]
+            - button "增加数值" [ref=e2322] [cursor=pointer]
+            - spinbutton "吃水(米)" [ref=e2328]
+        - generic [ref=e2329]:
+          - generic [ref=e2331]:
+            - generic [ref=e2332]: 额定电压(V)
+            - generic [ref=e2334]:
+              - button "减少数值" [ref=e2335] [cursor=pointer]
+              - button "增加数值" [ref=e2339] [cursor=pointer]
+              - spinbutton "额定电压(V)" [ref=e2345]
+          - generic [ref=e2347]:
+            - generic [ref=e2348]: 额定功率(kW)
+            - generic [ref=e2350]:
+              - button "减少数值" [ref=e2351] [cursor=pointer]
+              - button "增加数值" [ref=e2355] [cursor=pointer]
+              - spinbutton "额定功率(kW)" [ref=e2361]
+        - generic [ref=e2362]:
+          - generic [ref=e2363]: 备注
+          - textbox "备注" [ref=e2366]:
+            - /placeholder: 备注信息
+      - contentinfo [ref=e2367]:
+        - button "取消" [ref=e2368] [cursor=pointer]
+        - button "保存" [ref=e2370] [cursor=pointer]

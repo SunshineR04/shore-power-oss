@@ -1,0 +1,21 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e1019]:
+    - banner [ref=e1020]:
+      - generic [ref=e1021]: 长江岸电码头运维系统
+      - generic [ref=e1027]: Yangtze Shore Power O&M
+    - main [ref=e1028]:
+      - generic [ref=e1029]:
+        - generic [ref=e1030]:
+          - heading "欢迎登录" [level=2] [ref=e1035]
+          - paragraph [ref=e1036]: 智能岸电设备管理平台
+        - generic [ref=e1037]:
+          - generic [ref=e1038]:
+            - textbox "请输入用户名" [ref=e1047]
+            - textbox "请输入密码" [ref=e1053]
+            - button "登 录" [ref=e1056] [cursor=pointer]
+          - generic [ref=e1060]:
+            - text: 还没有账号？
+            - button "立即注册" [ref=e1061] [cursor=pointer]
+    - contentinfo [ref=e1063]: 长江岸电码头 · 智能运维
+  - alert [ref=e1064]:
+    - paragraph [ref=e1068]: 登录已过期，请重新登录

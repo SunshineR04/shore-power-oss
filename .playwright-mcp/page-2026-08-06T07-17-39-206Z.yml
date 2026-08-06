@@ -1,0 +1,142 @@
+- generic [ref=e1]:
+  - generic [ref=e1114]:
+    - complementary [ref=e1115]:
+      - generic [ref=e1116]: 岸电运维
+      - menubar [ref=e1123]:
+        - menuitem "系统首页" [ref=e1124] [cursor=pointer]
+        - menuitem "设备管理" [ref=e1129] [cursor=pointer]
+        - menuitem "故障预警" [ref=e1137] [cursor=pointer]
+        - menuitem "能耗中心" [ref=e1144] [cursor=pointer]
+        - menuitem "维护调度" [ref=e1147] [cursor=pointer]
+        - menuitem "用户管理" [ref=e1152] [cursor=pointer]
+        - menuitem "营收统计" [ref=e1157] [cursor=pointer]
+        - menuitem "系统设置" [ref=e1164] [cursor=pointer]
+      - generic [ref=e1169]: 系统在线
+    - generic [ref=e1174]:
+      - generic [ref=e1175]:
+        - generic [ref=e1176]:
+          - button [ref=e1177] [cursor=pointer]
+          - navigation "面包屑" [ref=e1181]:
+            - link "用户管理" [ref=e1598]
+        - generic [ref=e1184]:
+          - generic [ref=e1185] [cursor=pointer]
+          - button "系统管理员 管理员" [ref=e1193] [cursor=pointer]:
+            - generic [ref=e1196]:
+              - generic [ref=e1197]: 系统管理员
+              - generic [ref=e1198]: 管理员
+      - main [ref=e1201]:
+        - generic [ref=e1599]:
+          - generic [ref=e1601]:
+            - heading "用户管理" [level=1] [ref=e1602]
+            - paragraph [ref=e1603]: 管理系统用户账户、角色权限与状态
+          - generic [ref=e1605]:
+            - generic [ref=e1606]:
+              - generic [ref=e1607]:
+                - textbox "搜索用户名/姓名" [ref=e1614]
+                - generic [ref=e1616] [cursor=pointer]:
+                  - generic:
+                    - combobox [ref=e1618]
+                    - generic [ref=e1619]: 角色
+                - button "搜索" [ref=e1624] [cursor=pointer]
+              - button "添加用户" [active] [ref=e1626] [cursor=pointer]
+            - generic [ref=e1632]:
+              - table [ref=e1634]:
+                - rowgroup [ref=e1644]:
+                  - row [ref=e1645]:
+                    - columnheader "用户名" [ref=e1646]
+                    - columnheader "真实姓名" [ref=e1648]
+                    - columnheader "手机号" [ref=e1650]
+                    - columnheader "邮箱" [ref=e1652]
+                    - columnheader "角色" [ref=e1654]
+                    - columnheader "状态" [ref=e1656]
+                    - columnheader "创建时间" [ref=e1658]
+                    - columnheader "操作" [ref=e1660]
+              - table [ref=e1666]:
+                - rowgroup [ref=e1676]:
+                  - row [ref=e1848]:
+                    - cell "test1" [ref=e1849]
+                    - cell "测试用户" [ref=e1850]
+                    - cell [ref=e1682]
+                    - cell [ref=e1683]
+                    - cell "普通用户" [ref=e1851]
+                    - cell [ref=e1688]:
+                      - generic [ref=e1690]:
+                        - switch [checked]
+                        - generic [ref=e1691] [cursor=pointer]
+                    - cell "2026-08-06 15:17:38" [ref=e1852]
+                    - cell [ref=e1695]:
+                      - generic [ref=e1696]:
+                        - button "编辑" [ref=e1697] [cursor=pointer]
+                        - button "删除" [ref=e1699] [cursor=pointer]
+                  - row [ref=e1853]:
+                    - cell "op1" [ref=e1854]
+                    - cell "运维演示员" [ref=e1855]
+                    - cell [ref=e1706]
+                    - cell [ref=e1707]
+                    - cell "运维人员" [ref=e1856]
+                    - cell [ref=e1712]:
+                      - generic [ref=e1714]:
+                        - switch [checked]
+                        - generic [ref=e1715] [cursor=pointer]
+                    - cell "2026-08-06 15:11:56" [ref=e1857]
+                    - cell [ref=e1719]:
+                      - generic [ref=e1720]:
+                        - button "编辑" [ref=e1721] [cursor=pointer]
+                        - button "删除" [ref=e1723] [cursor=pointer]
+                  - row [ref=e1858]:
+                    - cell "sr" [ref=e1859]
+                    - cell "舒锐" [ref=e1860]
+                    - cell [ref=e1730]
+                    - cell [ref=e1731]
+                    - cell "普通用户" [ref=e1861]
+                    - cell [ref=e1736]:
+                      - generic [ref=e1738]:
+                        - switch [checked]
+                        - generic [ref=e1739] [cursor=pointer]
+                    - cell "2026-05-08 18:33:12" [ref=e1862]
+                    - cell [ref=e1743]:
+                      - generic [ref=e1744]:
+                        - button "编辑" [ref=e1745] [cursor=pointer]
+                        - button "删除" [ref=e1747] [cursor=pointer]
+                  - row [ref=e1863]:
+                    - cell "admin" [ref=e1864]
+                    - cell "系统管理员" [ref=e1865]
+                    - cell [ref=e1754]
+                    - cell [ref=e1755]
+                    - cell "管理员" [ref=e1866]
+                    - cell [ref=e1760]:
+                      - generic [ref=e1762]:
+                        - switch [checked]
+                        - generic [ref=e1763] [cursor=pointer]
+                    - cell "2026-05-06 10:58:47" [ref=e1765]
+                    - cell [ref=e1767]:
+                      - generic [ref=e1768]:
+                        - button "编辑" [ref=e1769] [cursor=pointer]
+                        - button "删除" [ref=e1771] [cursor=pointer]
+                  - row [ref=e1867]:
+                    - cell "user1" [ref=e1868]
+                    - cell "张运维" [ref=e1870]
+                    - cell [ref=e1872]
+                    - cell [ref=e1873]
+                    - cell "运维人员" [ref=e1874]
+                    - cell [ref=e1878]:
+                      - generic [ref=e1880]:
+                        - switch [checked]
+                        - generic [ref=e1881] [cursor=pointer]
+                    - cell "2026-05-06 10:58:47" [ref=e1883]
+                    - cell [ref=e1885]:
+                      - generic [ref=e1886]:
+                        - button "编辑" [ref=e1887] [cursor=pointer]
+                        - button "删除" [ref=e1889] [cursor=pointer]
+            - generic [ref=e1774]:
+              - generic [ref=e1775]: 共 5 条
+              - generic [ref=e1778] [cursor=pointer]:
+                - generic:
+                  - combobox [ref=e1780]
+                  - generic [ref=e1781]: 10条/页
+              - button "上一页" [disabled] [ref=e1786]
+              - list [ref=e1787]:
+                - listitem "第 1 页" [ref=e1788]: "1"
+              - button "下一页" [disabled] [ref=e1789]
+  - alert [ref=e1891]:
+    - paragraph [ref=e1895]: 添加成功
