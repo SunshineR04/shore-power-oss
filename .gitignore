@@ -74,3 +74,6 @@ dist/
 
 # === Playwright MCP 快照 ===
 .playwright-mcp/
+
+# === ZCode 本地计划/会话文件 ===
+.zcode/
