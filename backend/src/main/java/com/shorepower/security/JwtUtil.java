@@ -2,6 +2,7 @@ package com.shorepower.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,18 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    /**
+     * 启动时校验密钥：缺失或长度不足直接失败，避免使用弱/默认密钥上线。
+     * HS256 要求密钥至少 32 字节（256 bit）。
+     */
+    @PostConstruct
+    public void validateSecret() {
+        if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException(
+                "JWT 密钥未配置或长度不足：请设置环境变量 JWT_SECRET（至少 32 字节的强随机字符串）");
+        }
+    }
+
     /** 从配置的密钥字符串生成 HMAC-SHA 密钥对象 */
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -57,13 +70,15 @@ public class JwtUtil {
      * @param userId 用户ID（自定义 claim）
      * @param username 用户名（作为 subject）
      * @param role 角色，如 ADMIN/OPERATOR/USER
+     * @param tokenVersion 用户 token_version（用于修改密码/禁用/改角色后立即使旧 token 失效）
      * @return 签名的 JWT 字符串
      */
-    public String generateToken(Long userId, String username, String role) {
+    public String generateToken(Long userId, String username, String role, int tokenVersion) {
         return Jwts.builder()
                 .subject(username)            // JWT 标准字段 sub
                 .claim("userId", userId)      // 自定义字段：用户ID
                 .claim("role", role)          // 自定义字段：角色
+                .claim("tokenVersion", tokenVersion) // 自定义字段：token 版本号
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey())           // HMAC-SHA256 对称签名
@@ -110,5 +125,11 @@ public class JwtUtil {
     /** 从 Token 中提取角色（自定义 role 字段） */
     public String getRole(String token) {
         return parseToken(token).get("role", String.class);
+    }
+
+    /** 从 Token 中提取 token 版本号（自定义 tokenVersion 字段），缺失时返回 0（兼容旧 Token） */
+    public int getTokenVersion(String token) {
+        Integer v = parseToken(token).get("tokenVersion", Integer.class);
+        return v != null ? v : 0;
     }
 }

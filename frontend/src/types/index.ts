@@ -105,23 +105,6 @@ export interface Ship {
   remark?: string
 }
 
-export interface Wallet {
-  id: number
-  userId: number
-  balance: number
-  totalRecharge: number
-  totalSpent: number
-}
-
-export interface RechargeRecord {
-  id: number
-  userId: number
-  amount: number
-  method: string
-  status: string
-  createTime: string
-}
-
 export interface DashboardStats {
   totalDevices: number
   onlineDevices: number

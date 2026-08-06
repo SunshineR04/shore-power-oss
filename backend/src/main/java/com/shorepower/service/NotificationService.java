@@ -2,6 +2,7 @@ package com.shorepower.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.shorepower.common.BusinessException;
 import com.shorepower.entity.Notification;
 import com.shorepower.mapper.NotificationMapper;
 import lombok.RequiredArgsConstructor;
@@ -73,11 +74,17 @@ public class NotificationService {
         return notificationMapper.selectCount(wrapper).intValue();
     }
 
-    public void markRead(Long id) {
-        Notification n = notificationMapper.selectById(id);
-        if (n != null) {
-            n.setIsRead(1);
-            notificationMapper.updateById(n);
+    /**
+     * 标记单条通知为已读（仅限本人通知，防止越权修改他人通知）
+     */
+    public void markRead(Long userId, Long id) {
+        Notification update = new Notification();
+        update.setIsRead(1);
+        int rows = notificationMapper.update(update, new LambdaQueryWrapper<Notification>()
+            .eq(Notification::getId, id)
+            .eq(Notification::getUserId, userId));
+        if (rows == 0) {
+            throw new BusinessException("通知不存在");
         }
     }
 

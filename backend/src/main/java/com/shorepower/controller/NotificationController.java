@@ -41,8 +41,9 @@ public class NotificationController {
     }
 
     @PutMapping("/read/{id}")
-    public Result<?> markRead(@PathVariable Long id) {
-        notificationService.markRead(id);
+    public Result<?> markRead(Authentication auth, @PathVariable Long id) {
+        Long userId = (Long) auth.getPrincipal();
+        notificationService.markRead(userId, id);
         return Result.ok();
     }
 

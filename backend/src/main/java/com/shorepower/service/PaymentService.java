@@ -27,6 +27,17 @@ public class PaymentService {
     private final DeviceMapper deviceMapper;
 
     public PaymentOrder createOrder(Long reservationId, Long userId, BigDecimal amount, String method) {
+        // 复用同一预约未支付的支付单，避免重复下单
+        PaymentOrder existing = paymentOrderMapper.selectOne(
+            new LambdaQueryWrapper<PaymentOrder>()
+                .eq(PaymentOrder::getReservationId, reservationId)
+                .eq(PaymentOrder::getStatus, "PENDING")
+                .orderByAsc(PaymentOrder::getId)
+                .last("LIMIT 1")
+        );
+        if (existing != null) {
+            return existing;
+        }
         PaymentOrder order = new PaymentOrder();
         order.setReservationId(reservationId);
         order.setUserId(userId);
@@ -76,15 +87,26 @@ public class PaymentService {
         return info;
     }
 
+    /**
+     * 模拟支付回调：仅当订单处于 PENDING 时置为 PAID（条件更新，保证幂等）。
+     * 演示环境由前端“我已支付”触发；生产接入真实网关时应增加签名校验。
+     */
     public boolean processCallback(String tradeNo) {
         PaymentOrder order = getByTradeNo(tradeNo);
         if (order == null || !"PENDING".equals(order.getStatus())) {
             return false;
         }
-        order.setStatus("PAID");
-        order.setPayTime(LocalDateTime.now());
-        paymentOrderMapper.updateById(order);
-        log.info("支付回调成功: tradeNo={}", tradeNo);
-        return true;
+        PaymentOrder update = new PaymentOrder();
+        update.setId(order.getId());
+        update.setStatus("PAID");
+        update.setPayTime(LocalDateTime.now());
+        int rows = paymentOrderMapper.update(update, new LambdaQueryWrapper<PaymentOrder>()
+            .eq(PaymentOrder::getId, order.getId())
+            .eq(PaymentOrder::getStatus, "PENDING"));
+        if (rows > 0) {
+            log.info("支付回调成功: tradeNo={}", tradeNo);
+            return true;
+        }
+        return false;
     }
 }

@@ -24,6 +24,7 @@ import jakarta.validation.constraints.Min;
  */
 @RestController
 @RequestMapping("/api/device")
+@Validated
 @RequiredArgsConstructor
 public class DeviceController {
 
@@ -82,7 +83,7 @@ public class DeviceController {
 
     @GetMapping("/{id}/trend")
     public Result<?> trend(@PathVariable Long id,
-                           @RequestParam(defaultValue = "24") int hours) {
+                           @RequestParam(defaultValue = "24") @Min(1) @Max(168) int hours) {
         return Result.ok(deviceService.getDeviceTrend(id, hours));
     }
 

@@ -175,7 +175,8 @@
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted, nextTick, onUnmounted } from 'vue'
-import * as echarts from 'echarts'
+import { useChartResize } from '../../composables/useChartResize'
+import echarts from '../../utils/echarts'
 import { energyApi } from '../../api'
 import { useDataSync } from '../../composables/useDataSync'
 
@@ -451,7 +452,11 @@ function renderHeatmap() {
     backgroundColor: 'transparent',
     textStyle: { color: '#94a3b8' },
     title: { text: '24小时设备利用率', left: 'center', textStyle: { color: '#f1f5f9' } },
-    tooltip: { formatter: p => `${devices[p.data[1]]?.deviceName || ''}<br/>过去24h利用率: ${(p.data[2] * 100).toFixed(0)}%` },
+    tooltip: { formatter: p => {
+      // 动态数据 HTML 转义，防止存储型 XSS
+      const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+      return `${esc(devices[p.data[1]]?.deviceName || '')}<br/>过去24h利用率: ${esc((p.data[2] * 100).toFixed(0))}%`
+    } },
     grid: { left: 120, right: 60, bottom: 40, top: 50 },
     xAxis: { type: 'category', data: hours, splitArea: { show: true } },
     yAxis: { type: 'category', data: devices.map(d => d.deviceName), splitArea: { show: true } },
@@ -496,6 +501,7 @@ onMounted(async () => {
   await loadOverview()
 })
 
+useChartResize([() => trendInstance.value, () => deviceInstance.value, () => heatmapInstance.value])
 onUnmounted(() => {
   trendInstance.value?.dispose()
   deviceInstance.value?.dispose()

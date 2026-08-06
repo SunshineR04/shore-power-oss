@@ -13,6 +13,7 @@ import com.shorepower.service.SystemConfigService;
 import com.shorepower.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -35,23 +36,12 @@ import java.util.Set;
 /**
  * 设备运行数据模拟器
  *
- * 核心职责：通过定时任务模拟7台岸电设备的实时运行数据，替代真实硬件传感器。
- * 每1秒触发一次心跳，但实际数据生成+推送由配置项 device.polling.interval 控制（默认10秒）。
- *
- * 物理模拟模型：
- *   1. 软启动：设备从空闲→使用中时，负载从0渐变到目标值
- *   2. 负载惯性：目标负载随机游走 + 实际负载一阶滞后追踪
- *   3. 热惯性：I²R铜损 + IGBT开关损耗 + 环境温度 → 指数平滑
- *   4. PFC功率因数曲线：轻载0.85→满载0.99，三段分段线性
- *   5. 三相功率公式：P = √3 × U × I × PF
- *
- * WebSocket推送Topic：
- *   - /topic/device-data：设备运行数据（JSON数组，每台设备一个Map）
- *   - /topic/alarm：告警事件（触发即推）
- *   - /topic/device-status：设备状态变更（ONLINE/FAULT/IN_USE）
+ * 仅限 dev/demo 环境启用（@Profile），生产接入真实设备后不会写入模拟数据。
+ * ...
  */
 @Slf4j
 @Component
+@Profile("dev")
 @RequiredArgsConstructor
 public class DataSimulator {
 

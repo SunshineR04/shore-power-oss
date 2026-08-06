@@ -86,6 +86,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      * 校验失败抛 IllegalArgumentException → STOMP 连接被拒绝（前端收到 ERROR 帧）
      * 校验成功将 userId 和 username 存入 session 属性，供后续 @MessageMapping 使用
      */
+    /**
+     * 需要 ADMIN/OPERATOR 角色的全局主题（设备遥测、告警、状态属于运维数据）
+     */
+    private static final List<String> STAFF_ONLY_TOPICS = List.of(
+        "/topic/device-data", "/topic/alarm", "/topic/alarm-resolved", "/topic/device-status"
+    );
+
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -110,25 +117,32 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     // 将用户信息存入 session，后续处理器可以直接获取
                     accessor.getSessionAttributes().put("userId", jwtUtil.getUserId(token));
                     accessor.getSessionAttributes().put("username", jwtUtil.getUsername(token));
+                    accessor.getSessionAttributes().put("role", jwtUtil.getRole(token));
                 }
 
-                // 订阅鉴权：用户只能订阅自己的个性化主题，防止越权窃听他人通知
-                // /topic/notification/{userId}、/topic/maintenance-assigned/{userId} 中的 userId
-                // 必须与当前会话 userId 一致，否则拒绝订阅
+                // 订阅鉴权：
+                // 1. 运维类全局主题（设备数据/告警/状态）仅 ADMIN/OPERATOR 可订阅
+                // 2. 用户个性化主题（notification/maintenance-assigned）中的 userId 必须与当前会话一致
                 if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
                     String dest = accessor.getDestination();
-                    if (dest != null
-                            && (dest.startsWith("/topic/notification/")
-                            || dest.startsWith("/topic/maintenance-assigned/"))) {
-                        Long sessionUserId = (Long) accessor.getSessionAttributes().get("userId");
-                        String[] parts = dest.split("/");
-                        try {
-                            Long targetUserId = Long.valueOf(parts[parts.length - 1]);
-                            if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
-                                throw new IllegalArgumentException("无权订阅此主题");
+                    if (dest != null) {
+                        String role = (String) accessor.getSessionAttributes().get("role");
+                        boolean staff = "ADMIN".equals(role) || "OPERATOR".equals(role);
+                        if (STAFF_ONLY_TOPICS.stream().anyMatch(dest::startsWith) && !staff) {
+                            throw new IllegalArgumentException("无权订阅此主题");
+                        }
+                        if (dest.startsWith("/topic/notification/")
+                                || dest.startsWith("/topic/maintenance-assigned/")) {
+                            Long sessionUserId = (Long) accessor.getSessionAttributes().get("userId");
+                            String[] parts = dest.split("/");
+                            try {
+                                Long targetUserId = Long.valueOf(parts[parts.length - 1]);
+                                if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
+                                    throw new IllegalArgumentException("无权订阅此主题");
+                                }
+                            } catch (NumberFormatException e) {
+                                throw new IllegalArgumentException("非法的订阅主题");
                             }
-                        } catch (NumberFormatException e) {
-                            throw new IllegalArgumentException("非法的订阅主题");
                         }
                     }
                 }

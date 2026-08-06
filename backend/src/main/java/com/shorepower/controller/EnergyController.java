@@ -4,7 +4,10 @@ import com.shorepower.common.Result;
 import com.shorepower.mapper.EnergyStatMapper;
 import com.shorepower.service.EnergyOptimizationService;
 import com.shorepower.service.ElectricityPriceService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -34,6 +37,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/energy")
+@Validated
 @RequiredArgsConstructor
 public class EnergyController {
 
@@ -99,7 +103,8 @@ public class EnergyController {
     }
 
     @GetMapping("/analyze/{deviceId}")
-    public Result<?> analyze(@PathVariable Long deviceId, @RequestParam(defaultValue = "7") int days) {
+    public Result<?> analyze(@PathVariable Long deviceId,
+                             @RequestParam(defaultValue = "7") @Min(1) @Max(31) int days) {
         return Result.ok(energyOptimizationService.analyzeEnergyPatterns(deviceId, days));
     }
 
@@ -109,7 +114,8 @@ public class EnergyController {
     }
 
     @GetMapping("/predict/{deviceId}")
-    public Result<?> predict(@PathVariable Long deviceId, @RequestParam(defaultValue = "7") int days) {
+    public Result<?> predict(@PathVariable Long deviceId,
+                             @RequestParam(defaultValue = "7") @Min(1) @Max(31) int days) {
         return Result.ok(energyOptimizationService.predictEnergyConsumption(deviceId, days));
     }
 

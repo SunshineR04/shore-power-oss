@@ -4,8 +4,10 @@
 
 # === Environment files (关键: 永不提交真实 .env) ===
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.pem
+*.key
 
 # === 临时文件 ===
 temp_docx_text.txt
@@ -54,6 +56,13 @@ desktop.ini
 
 # === AI 工具配置 ===
 .reasonix/
+
+# === 测试产物 ===
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+backend/target/surefire-reports/
 
 # === 日志与构建产物 (通用兜底) ===
 *.log

@@ -26,13 +26,19 @@ request.interceptors.response.use(
     return Promise.reject(res.data)
   },
   err => {
-    if ((err.response?.status === 401 || err.response?.status === 403) && !isRedirecting) {
+    const status = err.response?.status
+    const msg = err.response?.data?.msg || err.message || '网络异常'
+    if (status === 401 && !isRedirecting) {
+      // 登录过期：清理会话并跳转登录
       isRedirecting = true
       sessionStorage.removeItem('token')
+      sessionStorage.removeItem('userInfo')
       router.push('/login').finally(() => { isRedirecting = false })
       ElMessage.error('登录已过期，请重新登录')
+    } else if (status === 403) {
+      ElMessage.error(msg === 'Request failed with status code 403' ? '权限不足' : msg)
     } else if (!isRedirecting) {
-      ElMessage.error(err.message || '网络异常')
+      ElMessage.error(msg)
     }
     return Promise.reject(err)
   }

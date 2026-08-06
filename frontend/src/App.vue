@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-const cachedViews = ['UserDevices', 'UserReservations', 'UserWallet']
+const cachedViews = ['UserDevices', 'UserReservations']
 </script>

@@ -2,6 +2,7 @@ package com.shorepower.controller;
 
 import com.shorepower.common.Result;
 import com.shorepower.service.PaymentService;
+import com.shorepower.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final ReservationService reservationService;
 
     @GetMapping("/info/{tradeNo}")
     public Result<?> getInfo(Authentication auth, @PathVariable String tradeNo) {
@@ -25,15 +27,15 @@ public class PaymentController {
     }
 
     /**
-     * 支付回调
+     * 模拟支付回调
      *
-     * ⚠️ 安全提示：当前为模拟支付流程，仅凭 tradeNo 完成订单，无签名/来源校验。
-     * 生产环境必须接入真实支付网关（支付宝 RSA2 / 微信支付 V3 签名），
-     * 校验签名 + 金额 + 商户号后再更新订单状态，禁止直接信任 tradeNo 参数。
+     * 演示环境：必须登录，且只能完成本人支付订单（校验订单 userId == 当前用户）。
+     * 幂等：已 PAID 的订单重复回调直接返回成功。
+     * 生产环境：应改为支付网关回调（来源 IP + 签名 + 金额校验），本接口不应暴露。
      */
     @PostMapping("/callback")
-    public Result<?> callback(@RequestParam String tradeNo) {
-        boolean ok = paymentService.processCallback(tradeNo);
-        return ok ? Result.ok("支付成功") : Result.fail("支付回调处理失败");
+    public Result<?> callback(Authentication auth, @RequestParam String tradeNo) {
+        Long userId = (Long) auth.getPrincipal();
+        return reservationService.completePayment(userId, tradeNo);
     }
 }

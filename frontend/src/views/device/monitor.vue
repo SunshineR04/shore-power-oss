@@ -158,7 +158,8 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import * as echarts from 'echarts'
+import { useChartResize } from '../../composables/useChartResize'
+import echarts from '../../utils/echarts'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
 import { deviceApi, alarmApi, systemConfigApi } from '../../api'
@@ -491,9 +492,13 @@ function renderTrend(data) {
         trigger: 'axis',
         axisPointer: { type: 'cross' },
         formatter: params => {
-          let html = `<div style="font-weight:bold;margin-bottom:4px;">${params[0]?.axisValue || ''}</div>`
+          // 动态数据必须 HTML 转义，防止存储型 XSS
+          const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+          }[c]))
+          let html = `<div style="font-weight:bold;margin-bottom:4px;">${escapeHtml(params[0]?.axisValue || '')}</div>`
           params.forEach(p => {
-            html += `<div>${p.marker} ${p.seriesName}：<b>${p.value?.toFixed(1) ?? '-'}</b></div>`
+            html += `<div>${p.marker} ${escapeHtml(p.seriesName)}：<b>${escapeHtml(p.value?.toFixed(1) ?? '-')}</b></div>`
           })
           return html
         }
@@ -554,6 +559,11 @@ onUnmounted(() => {
   trendChartInstance?.dispose()
   stompClient?.deactivate()
 })
+
+useChartResize([
+  () => trendChartInstance,
+  () => gaugeCharts[selectedDeviceId.value] || null
+])
 </script>
 
 <style scoped>

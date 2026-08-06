@@ -113,6 +113,8 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'UserDevices' })
+
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { deviceApi, reservationApi, shipApi } from '../../api'

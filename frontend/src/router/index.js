@@ -14,6 +14,18 @@
  */
 import { createRouter, createWebHistory } from 'vue-router'
 
+/** 安全解析 sessionStorage 中的用户信息，损坏 JSON 时返回空对象 */
+function safeUserInfo() {
+  try {
+    const raw = sessionStorage.getItem('userInfo')
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
 const routes = [
   {
     path: '/login',
@@ -24,7 +36,7 @@ const routes = [
     path: '/',
     component: () => import('../layout/index.vue'),
     redirect: () => {
-      const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
+      const userInfo = safeUserInfo()
       if (userInfo.role === 'ADMIN') return '/dashboard'
       if (userInfo.role === 'OPERATOR') return '/dashboard'
       return '/home'
@@ -73,7 +85,7 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
   const token = sessionStorage.getItem('token')
-  const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
+  const userInfo = safeUserInfo()
   const role = userInfo.role || ''
 
   // 规则1：未登录访问非登录页 → 去登录

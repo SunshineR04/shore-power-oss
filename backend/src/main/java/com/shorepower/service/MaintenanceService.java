@@ -140,16 +140,23 @@ public class MaintenanceService {
 
     /**
      * 更新任务信息（仅 PENDING 和 ASSIGNED 状态可编辑）
-     * 执行中（IN_PROGRESS）和已完成（COMPLETED）的任务不可修改
+     * 权限：ADMIN 可编辑任意任务；OPERATOR 仅可编辑指派给自己的任务，
+     * 且不可修改 assigneeId（防改派越权）。
      */
     @Transactional
-    public void update(MaintenanceTask task) {
+    public void update(Long operatorId, MaintenanceTask task) {
         try {
             MaintenanceTask existing = taskMapper.selectById(task.getId());
             if (existing == null) throw new BusinessException("任务不存在");
             // 状态校验：只有 PENDING 和 ASSIGNED 可编辑
             if (!"PENDING".equals(existing.getStatus()) && !"ASSIGNED".equals(existing.getStatus())) {
                 throw new BusinessException("仅待处理或已指派状态的任务可编辑");
+            }
+            // 权限校验：OPERATOR 只能编辑指派给自己的任务
+            SysUser operator = userService.getById(operatorId);
+            boolean isAdmin = operator != null && "ADMIN".equals(operator.getRole());
+            if (!isAdmin && !operatorId.equals(existing.getAssigneeId())) {
+                throw new BusinessException("仅可编辑指派给自己的任务");
             }
             // 逐个字段更新（不改变原有字段以外的值）
             existing.setTaskTitle(task.getTaskTitle());
@@ -159,7 +166,10 @@ public class MaintenanceService {
             existing.setTaskContent(task.getTaskContent());
             existing.setPlanStartTime(task.getPlanStartTime());
             existing.setPlanEndTime(task.getPlanEndTime());
-            existing.setAssigneeId(task.getAssigneeId());
+            // OPERATOR 不可修改指派人；ADMIN 可改
+            if (isAdmin) {
+                existing.setAssigneeId(task.getAssigneeId());
+            }
             taskMapper.updateById(existing);
         } catch (BusinessException e) {
             throw e;

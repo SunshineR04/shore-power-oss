@@ -49,7 +49,8 @@ public class AuthService {
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             return Result.fail("用户名或密码错误");
         }
-        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole(),
+                user.getTokenVersion() != null ? user.getTokenVersion() : 0);
         return Result.ok(new LoginResponse(token, user.getId(), user.getUsername(), user.getRealName(), user.getRole(), user.getAvatar()));
     }
 
@@ -58,23 +59,26 @@ public class AuthService {
         if (req.getPassword() == null || req.getPassword().length() < 6 || req.getPassword().length() > 20) {
             return Result.fail("密码长度需6-20位");
         }
+        // 空字符串归一为 NULL，避免与 sys_user 的唯一索引冲突（V7）
+        String phone = (req.getPhone() != null && !req.getPhone().isEmpty()) ? req.getPhone() : null;
+        String email = (req.getEmail() != null && !req.getEmail().isEmpty()) ? req.getEmail() : null;
         long count = userMapper.selectCount(
             new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, req.getUsername())
         );
         if (count > 0) {
             return Result.fail("用户名已存在");
         }
-        if (req.getPhone() != null && !req.getPhone().isEmpty()) {
+        if (phone != null) {
             long phoneCount = userMapper.selectCount(
-                new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhone, req.getPhone())
+                new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhone, phone)
             );
             if (phoneCount > 0) {
                 return Result.fail("手机号已被注册");
             }
         }
-        if (req.getEmail() != null && !req.getEmail().isEmpty()) {
+        if (email != null) {
             long emailCount = userMapper.selectCount(
-                new LambdaQueryWrapper<SysUser>().eq(SysUser::getEmail, req.getEmail())
+                new LambdaQueryWrapper<SysUser>().eq(SysUser::getEmail, email)
             );
             if (emailCount > 0) {
                 return Result.fail("邮箱已被注册");
@@ -84,10 +88,11 @@ public class AuthService {
         user.setUsername(req.getUsername());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setRealName(req.getRealName());
-        user.setPhone(req.getPhone());
-        user.setEmail(req.getEmail());
+        user.setPhone(phone);
+        user.setEmail(email);
         user.setRole("USER");
         user.setStatus(1);
+        user.setTokenVersion(0);
         try {
             userMapper.insert(user);
         } catch (DuplicateKeyException e) {

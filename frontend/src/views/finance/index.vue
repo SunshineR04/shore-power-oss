@@ -147,8 +147,9 @@
 
 <script setup>
 import { ref, reactive, watch, onMounted, nextTick, onUnmounted } from 'vue'
+import { useChartResize } from '../../composables/useChartResize'
 import { financeApi } from '../../api'
-import * as echarts from 'echarts'
+import echarts from '../../utils/echarts'
 import { useDataSync } from '../../composables/useDataSync'
 
 const summary = reactive({})
@@ -284,6 +285,7 @@ onMounted(async () => {
   })
 })
 
+useChartResize([() => trendChart, () => weekChart])
 onUnmounted(() => {
   trendChart?.dispose()
   weekChart?.dispose()

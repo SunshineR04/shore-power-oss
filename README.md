@@ -15,7 +15,7 @@
 ### 用户端
 - 岸电设备查询、预约、用能结算
 - 船舶信息管理、用电记录
-- 钱包充值、订单支付
+- 订单支付（模拟支付，仅用于演示）
 - 个人中心、设备详情
 
 ### 运维端
@@ -111,9 +111,9 @@ shore-power-system/
 ### 环境要求
 
 - JDK 21+
-- Maven 3.6+
+- Maven 3.6+（或使用提交的 Maven Wrapper）
 - MySQL 8.0+
-- Node.js 18+
+- Node.js 20.19+（Vite 8 要求）
 
 ### 1. 初始化数据库
 
@@ -130,15 +130,25 @@ cp .env.example .env
 # 编辑 .env，设置 JWT_SECRET 和 DB_PASSWORD
 ```
 
+> ⚠️ Spring Boot 不会自动读取项目根目录的 `.env` 文件。请通过 shell / 容器 / CI 将环境变量注入后端进程：
+>
+> ```bash
+> export JWT_SECRET="$(openssl rand -base64 48)"
+> export DB_PASSWORD="你的数据库密码"
+> ```
+>
+> 缺少 `JWT_SECRET` 或密钥短于 32 字节时，后端会**拒绝启动**。
+
 ### 3. 启动后端
 
 ```bash
 cd backend
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 - 端口：8088
 - Swagger UI：http://localhost:8088/swagger-ui.html
+- 健康检查：http://localhost:8088/actuator/health
 
 ### 4. 启动前端
 
@@ -153,14 +163,41 @@ npm run dev
 
 ## 默认账号
 
-种子数据创建的测试账号（密码均为 `123456`）：
+种子数据创建的演示账号（密码均为 `123456`）：
 
 | 角色 | 账号 |
 |------|------|
 | 管理员 | `admin` |
+| 运维人员 | `op1` |
 | 普通用户 | `user1` |
 
-> 生产环境务必修改默认密码或删除种子数据。
+> ⚠️ 这些账号仅用于本地演示，**生产环境必须删除种子数据或修改默认密码**。
+
+## 模拟支付说明
+
+> ⚠️ 本项目为演示项目，支付流程为**模拟实现**：点击“我已支付”即完成订单，不涉及真实资金。
+> 生产环境必须接入支付宝/微信支付并实现签名校验、金额核对与幂等回调，且不应暴露模拟回调接口。
+
+## 测试
+
+```bash
+# 后端（单元测试，Mockito 隔离，无需数据库）
+cd backend && ./mvnw test
+
+# 前端（Vitest 单元测试）
+cd frontend && npm test
+```
+
+CI（GitHub Actions，见 `.github/workflows/ci.yml`）会执行：
+
+- 后端：Java 21 + MySQL 8 集成环境下的 `mvn verify`
+- 前端：`npm ci` → `typecheck` → `test` → `build` → `npm audit`（高危及以上失败）
+
+## 模拟器与模拟数据说明
+
+- 设备数据模拟器（`DataSimulator`）与能耗历史填充（`EnergyStatService`）**仅 dev profile 启用**，
+  生产 profile 不会写入任何模拟数据。
+- 演示账号与模拟支付仅用于本地演示，生产环境必须删除种子数据并接入真实支付网关。
 
 ## 数据库迁移
 

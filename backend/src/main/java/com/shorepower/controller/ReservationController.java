@@ -92,8 +92,9 @@ public class ReservationController {
     }
 
     @PostMapping("/pay-callback")
-    public Result<?> payCallback(@RequestParam String tradeNo) {
-        return reservationService.completePayment(tradeNo);
+    public Result<?> payCallback(Authentication auth, @RequestParam String tradeNo) {
+        Long userId = (Long) auth.getPrincipal();
+        return reservationService.completePayment(userId, tradeNo);
     }
 
     @GetMapping("/usage-records")

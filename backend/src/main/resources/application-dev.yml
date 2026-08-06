@@ -9,7 +9,8 @@ spring:
       mode: never
 
 jwt:
-  secret: ${JWT_SECRET:PleaseSetYourOwnSecretKeyAtLeast32Bytes!!}
+  # 开发环境也要求显式设置 JWT_SECRET（可复制 .env.example 后填写），缺失/过短时应用拒绝启动
+  secret: ${JWT_SECRET}
 
 logging:
   level:

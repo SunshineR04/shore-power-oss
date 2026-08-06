@@ -21,6 +21,8 @@ public class SysUser {
     private String role;
     private Integer status;
     private String avatar;
+    /** JWT token 版本号：修改密码/禁用/改角色时递增，使旧 token 失效 */
+    private Integer tokenVersion;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)

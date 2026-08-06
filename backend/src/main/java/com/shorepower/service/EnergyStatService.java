@@ -12,6 +12,7 @@ import com.shorepower.mapper.EnergyStatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -48,13 +49,15 @@ public class EnergyStatService {
     private final ElectricityPriceService electricityPriceService;
 
     /**
-     * 应用启动时初始化历史能耗数据
+     * 应用启动时初始化历史能耗数据（仅 dev 环境）
      *
      * @EventListener(ApplicationReadyEvent.class) 在 Spring 容器完全启动后执行一次
      * 如果 energy_stat 表已存在数据则跳过，否则为每个设备生成最近31天的能耗记录
      * 已有真实 device_data 的设备使用真实数据，无数据的设备用模拟数据填充
+     * 生产环境（prod profile）不执行：模拟数据会污染真实统计。
      */
     @EventListener(ApplicationReadyEvent.class)
+    @Profile("dev")
     public void initHistoricalData() {
         Long count = energyStatMapper.selectCount(null);
         if (count != null && count > 0) {

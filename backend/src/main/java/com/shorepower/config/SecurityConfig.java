@@ -76,8 +76,8 @@ public class SecurityConfig {
                 auth
                     // 公开路径（无需登录即可访问）
                     .requestMatchers("/api/auth/**").permitAll()             // 登录/注册
-                    .requestMatchers("/ws/**").permitAll()                   // WebSocket 握手
-                    .requestMatchers("/api/payment/callback").permitAll()       // 支付回调（⚠️ 模拟环境：生产必须接入真实网关签名校验，不可直接 permitAll）
+                    .requestMatchers("/ws/**").permitAll()                   // WebSocket 握手（STOMP CONNECT 阶段再做 JWT 校验）
+                    .requestMatchers("/actuator/health", "/actuator/info").permitAll() // 健康检查（无敏感详情）
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();  // CORS 预检
                 // Swagger UI 仅 dev 环境公开（见 SecurityConfig 构造函数中的 profile 判断）
                 if (List.of(environment.getActiveProfiles()).contains("dev")) {

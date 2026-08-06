@@ -25,7 +25,10 @@ public class WeatherService {
 
     private volatile double baseTemperature = 30.0;
     private volatile long lastFetchTime = 0;
+    /** 失败退避：失败后至少等待 60 秒再重试，防止每台设备/每轮采样都重复外呼 */
+    private volatile long lastFailTime = 0;
     private static final long FETCH_INTERVAL = 5 * 60 * 1000L; // 5分钟
+    private static final long FAIL_BACKOFF = 60 * 1000L;       // 失败退避 60 秒
 
     @PostConstruct
     public void init() {
@@ -42,7 +45,7 @@ public class WeatherService {
 
     public double getCurrentAmbient() {
         long now = System.currentTimeMillis();
-        if (now - lastFetchTime > FETCH_INTERVAL) {
+        if (now - lastFetchTime > FETCH_INTERVAL && now - lastFailTime > FAIL_BACKOFF) {
             fetchTemperature();
         }
         int hour = LocalTime.now().getHour();
@@ -84,12 +87,15 @@ public class WeatherService {
             if (!tempNode.isMissingNode()) {
                 baseTemperature = tempNode.asDouble();
                 lastFetchTime = System.currentTimeMillis();
+                lastFailTime = 0;
                 log.info("天气API更新成功: {} = {}°C", location, String.format("%.1f", baseTemperature));
             }
         } catch (Exception e) {
             int fallback = configService.getIntConfig("temperature.ambient.base", 30);
             baseTemperature = fallback;
-            log.warn("天气API获取失败: {}, 使用兜底值: {}°C", e.getMessage(), fallback);
+            lastFailTime = System.currentTimeMillis();
+            log.warn("天气API获取失败: {}, 使用兜底值: {}°C（{}秒内不再重试）",
+                    e.getMessage(), fallback, FAIL_BACKOFF / 1000);
         }
     }
 }

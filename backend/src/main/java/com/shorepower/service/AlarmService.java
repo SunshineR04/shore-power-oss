@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -81,10 +82,16 @@ public class AlarmService {
         }
     }
 
+    /** 告警可流转到的状态白名单：仅允许 PENDING(重新打开)/RESOLVED(已解决)/IGNORED(已忽略) */
+    private static final Set<String> ALLOWED_TARGET_STATUS = Set.of("PENDING", "RESOLVED", "IGNORED");
+
     @Transactional
     public void handle(Long id, Long handlerId, String status, String remark) {
         Alarm alarm = alarmMapper.selectById(id);
         if (alarm == null) throw new BusinessException("告警不存在");
+        if (status == null || !ALLOWED_TARGET_STATUS.contains(status)) {
+            throw new BusinessException("非法的告警处理状态");
+        }
         alarm.setStatus(status);
         alarm.setHandlerId(handlerId);
         alarm.setHandleTime(LocalDateTime.now());

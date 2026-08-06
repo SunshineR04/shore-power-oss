@@ -25,4 +25,15 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 jwt:
-  expiration: 86400000
+  # 过期时间可配置（毫秒），默认 2 小时，便于演示环境测试过期行为
+  expiration: ${JWT_EXPIRATION:7200000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # 仅暴露健康检查端点；生产建议通过 Spring Security 保护
+        include: health,info
+  endpoint:
+    health:
+      show-details: never

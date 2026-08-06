@@ -1,9 +1,23 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+/** 安全读取 sessionStorage 中的 JSON，解析失败时返回空对象（并清理脏数据） */
+function safeReadUserInfo() {
+  try {
+    const raw = sessionStorage.getItem('userInfo')
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    sessionStorage.removeItem('userInfo')
+    sessionStorage.removeItem('token')
+    return {}
+  }
+}
+
 export const useUserStore = defineStore('user', () => {
   const token = ref(sessionStorage.getItem('token') || '')
-  const userInfo = ref(JSON.parse(sessionStorage.getItem('userInfo') || '{}'))
+  const userInfo = ref(safeReadUserInfo())
 
   function setLogin(data) {
     token.value = data.token

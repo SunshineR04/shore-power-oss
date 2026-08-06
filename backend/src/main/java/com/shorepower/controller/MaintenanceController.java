@@ -36,6 +36,7 @@ public class MaintenanceController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
     public Result<?> page(@RequestParam(defaultValue = "1") int pageNum,
                           @RequestParam(defaultValue = "10") @Min(1) @Max(100) int pageSize,
                           @RequestParam(required = false) String status,
@@ -70,11 +71,11 @@ public class MaintenanceController {
 
     @PutMapping
     @PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
-    public Result<?> update(@RequestBody String rawBody) {
+    public Result<?> update(Authentication auth, @RequestBody String rawBody) {
         try {
-            log.info("更新任务请求体: {}", rawBody);
+            Long userId = (Long) auth.getPrincipal();
             MaintenanceTask task = objectMapper.readValue(rawBody, MaintenanceTask.class);
-            maintenanceService.update(task);
+            maintenanceService.update(userId, task);
             return Result.ok();
         } catch (Exception e) {
             log.error("更新任务失败", e);

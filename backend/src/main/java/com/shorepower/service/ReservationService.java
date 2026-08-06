@@ -135,27 +135,30 @@ public class ReservationService {
         // === 船舶-充电桩兼容性匹配（双层兜底） ===
         if (shipId != null) {
             com.shorepower.entity.Ship ship = shipService.getById(shipId);
-            if (ship != null) {
-                // Tier1: 船舶有精确电气参数 → 做精确电压/功率比对
-                if (ship.getRatedVoltage() != null && ship.getRatedPower() != null) {
-                    // 电压必须完全匹配（如380V配380V，6600V配6600V）
-                    if (device.getRatedVoltage() != null && ship.getRatedVoltage().compareTo(device.getRatedVoltage()) != 0) {
-                        return Result.fail("船舶电压 " + ship.getRatedVoltage() + "V 与设备电压 " + device.getRatedVoltage() + "V 不匹配");
-                    }
-                    // 船舶额定功率不能超过设备额定功率
-                    if (device.getRatedPower() != null && ship.getRatedPower().compareTo(device.getRatedPower()) > 0) {
-                        return Result.fail("船舶功率 " + ship.getRatedPower() + "kW 超过设备额定功率 " + device.getRatedPower() + "kW");
-                    }
+            if (ship == null) {
+                return Result.fail("船舶不存在");
+            }
+            // 归属校验：只能使用自己的船舶预约
+            if (!ship.getUserId().equals(userId)) {
+                return Result.fail("无权使用此船舶");
+            }
+            if (ship.getRatedVoltage() != null && ship.getRatedPower() != null) {
+                // 电压必须完全匹配（如380V配380V，6600V配6600V）
+                if (device.getRatedVoltage() != null && ship.getRatedVoltage().compareTo(device.getRatedVoltage()) != 0) {
+                    return Result.fail("船舶电压 " + ship.getRatedVoltage() + "V 与设备电压 " + device.getRatedVoltage() + "V 不匹配");
+                }
+                // 船舶额定功率不能超过设备额定功率
+                if (device.getRatedPower() != null && ship.getRatedPower().compareTo(device.getRatedPower()) > 0) {
+                    return Result.fail("船舶功率 " + ship.getRatedPower() + "kW 超过设备额定功率 " + device.getRatedPower() + "kW");
+                }
+            } else if (ship.getShipType() != null) {
                 // Tier2: 船舶无精确参数但有类型 → 查类型映射表
-                } else if (ship.getShipType() != null) {
-                    // 从 DeviceTypeService 获取 船舶类型→充电桩类型 映射
-                    Map<String, Object> types = deviceTypeService.getDeviceTypes();
-                    Map<String, List<String>> shipToPileMap = (Map<String, List<String>>) types.get("shipToPileMap");
-                    List<String> compatiblePiles = shipToPileMap.get(ship.getShipType());
-                    // 如果映射表不存在该类型或设备不在兼容列表中，拒绝
-                    if (compatiblePiles != null && !compatiblePiles.contains(device.getDeviceType())) {
-                        return Result.fail("该船舶类型不适用于此充电桩");
-                    }
+                Map<String, Object> types = deviceTypeService.getDeviceTypes();
+                Map<String, List<String>> shipToPileMap = (Map<String, List<String>>) types.get("shipToPileMap");
+                List<String> compatiblePiles = shipToPileMap.get(ship.getShipType());
+                // 如果映射表不存在该类型或设备不在兼容列表中，拒绝
+                if (compatiblePiles != null && !compatiblePiles.contains(device.getDeviceType())) {
+                    return Result.fail("该船舶类型不适用于此充电桩");
                 }
             }
         }
@@ -421,15 +424,23 @@ public class ReservationService {
             return Result.fail("费用信息不存在");
         }
 
-        // 预约必须在 PENDING_PAYMENT（待支付）状态
+        // 预约必须在 PENDING_PAYMENT（待支付）状态，且属于当前用户
         Reservation reservation = reservationMapper.selectById(reservationId);
         if (reservation == null || !"PENDING_PAYMENT".equals(reservation.getStatus())) {
             return Result.fail("无需支付");
+        }
+        if (!reservation.getUserId().equals(userId)) {
+            return Result.fail("无权操作此预约");
         }
 
         // 通过 PaymentService 创建支付单（模拟：生成 tradeNo + 模拟二维码）
         String payMethod = (method != null) ? method : "ALIPAY";
         PaymentOrder order = paymentService.createOrder(reservationId, userId, record.getTotalCost(), payMethod);
+
+        // 金额一致性校验：支付单金额必须与结算金额一致
+        if (order.getAmount().compareTo(record.getTotalCost()) != 0) {
+            return Result.fail("支付金额不一致，请刷新后重试");
+        }
 
         // 返回支付信息给前端（前端展示二维码供用户扫码）
         return Result.ok(Map.of(
@@ -442,39 +453,46 @@ public class ReservationService {
     /**
      * 支付回调：PENDING_PAYMENT → COMPLETED
      *
-     * 支付成功后由支付网关回调此接口（模拟：前端直接调用）
-     * 执行内容：
-     *   1. 调用 paymentService.processCallback 处理回调逻辑
-     *   2. 更新预约状态为 COMPLETED（完成）
-     *   3. 推送 WebSocket 通知到 /topic/data-sync（前端刷新数据）
+     * 演示环境由前端“我已支付”按钮调用（必须登录且只能操作本人订单）。
+     * 生产接入真实支付网关时应增加签名、商户号、金额校验。
+     *
+     * 幂等性：订单已被标记 PAID 后，重复回调直接返回成功，不重复处理业务。
      */
     @Transactional
-    public Result<?> completePayment(String tradeNo) {
+    public Result<?> completePayment(Long userId, String tradeNo) {
+        // 查找对应的支付单
+        PaymentOrder order = paymentOrderMapper.selectOne(
+            new LambdaQueryWrapper<PaymentOrder>().eq(PaymentOrder::getTradeNo, tradeNo)
+        );
+        if (order == null) return Result.fail("支付单不存在");
+        // 归属校验：只能完成本人订单
+        if (!order.getUserId().equals(userId)) {
+            return Result.fail("无权操作此订单");
+        }
+        // 已支付（幂等）：直接返回成功
+        if ("PAID".equals(order.getStatus())) {
+            return Result.ok("支付成功");
+        }
+
         // 步骤1：处理支付回调（校验支付单状态，标记为已支付）
         boolean paid = paymentService.processCallback(tradeNo);
         if (!paid) {
             return Result.fail("支付失败");
         }
 
-        // 步骤2：查找对应的支付单
-        PaymentOrder order = paymentOrderMapper.selectOne(
-            new LambdaQueryWrapper<PaymentOrder>().eq(PaymentOrder::getTradeNo, tradeNo)
-        );
-        if (order == null) return Result.fail("支付单不存在");
-
-        // 步骤3：查找预约，更新状态为 COMPLETED
+        // 步骤2：查找预约，更新状态为 COMPLETED
         Reservation reservation = reservationMapper.selectById(order.getReservationId());
         if (reservation != null && "PENDING_PAYMENT".equals(reservation.getStatus())) {
             reservation.setStatus("COMPLETED");
             reservationMapper.updateById(reservation);
         }
 
-        // 步骤4：查找使用记录（用于构造推送消息）
+        // 步骤3：查找使用记录（用于构造推送消息）
         UsageRecord record = usageRecordMapper.selectOne(
             new LambdaQueryWrapper<UsageRecord>().eq(UsageRecord::getReservationId, order.getReservationId())
         );
 
-        // 步骤5：推送 WebSocket 通知，前端收到后刷新预约列表和仪表盘数据
+        // 步骤4：推送 WebSocket 通知，前端收到后刷新预约列表和仪表盘数据
         Map<String, Object> syncMsg = new HashMap<>();
         syncMsg.put("type", "PAYMENT");
         syncMsg.put("deviceId", reservation != null ? reservation.getDeviceId() : null);
@@ -494,6 +512,29 @@ public class ReservationService {
     public Result<?> submitRating(Long userId, Long deviceId, Integer rating, String comment) {
         if (rating == null || rating < 1 || rating > 5) {
             return Result.fail("评分必须在1-5之间");
+        }
+        if (deviceId == null) {
+            return Result.fail("设备不能为空");
+        }
+
+        // 评分资格校验：必须在该设备上有已完成（COMPLETED）的预约
+        long completed = reservationMapper.selectCount(
+            new LambdaQueryWrapper<Reservation>()
+                .eq(Reservation::getUserId, userId)
+                .eq(Reservation::getDeviceId, deviceId)
+                .eq(Reservation::getStatus, "COMPLETED")
+        );
+        if (completed == 0) {
+            return Result.fail("仅完成使用的设备可评价");
+        }
+        // 防重复评分：同一用户同一设备仅允许一条评价
+        long rated = deviceRatingMapper.selectCount(
+            new LambdaQueryWrapper<DeviceRating>()
+                .eq(DeviceRating::getUserId, userId)
+                .eq(DeviceRating::getDeviceId, deviceId)
+        );
+        if (rated > 0) {
+            return Result.fail("您已评价过该设备");
         }
 
         DeviceRating dr = new DeviceRating();

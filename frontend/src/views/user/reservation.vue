@@ -147,6 +147,8 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'UserReservations' })
+
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { reservationApi } from '../../api'
@@ -269,11 +271,6 @@ const confirmPay = async () => {
   } finally {
     paying.value = false
   }
-}
-
-const goRecharge = () => {
-  payDialogVisible.value = false
-  router.push('/user/wallet')
 }
 
 const viewDetail = async (id) => {
