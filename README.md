@@ -66,6 +66,15 @@
 | 实时 | STOMP.js + SockJS |
 | 类型 | TypeScript 6.0 |
 
+## 前端主题
+
+清爽蓝企业运营主题（`#2563eb` 主色）：
+
+- 设计令牌集中在 `frontend/src/style.css` 的 `:root`（品牌色/中性色/阴影/圆角/字号/图表语义色），并同步覆盖 Element Plus 变量
+- 状态文案与标签色统一在 `frontend/src/utils/status.js`（设备/任务/告警/预约状态），组件 `components/StatusTag.vue` 渲染
+- ECharts 配色统一在 `frontend/src/utils/chartTheme.js`，与 CSS 令牌对齐
+- 深色绿主题已全部迁移为浅色蓝主题；页面级样式均引用 `var(--*)` 令牌，便于整体换肤
+
 ## 项目结构
 
 ```
@@ -98,7 +107,7 @@ shore-power-system/
 │   │   ├── router/           路由（含 RBAC 守卫）
 │   │   ├── store/            Pinia 状态
 │   │   ├── types/            TS 类型定义
-│   │   ├── utils/            工具（axios 封装）
+│   │   ├── utils/            工具（request 封装/状态常量/图表主题）
 │   │   └── views/            页面（user/operator/admin 三角色域）
 │   └── vite.config.js
 │
