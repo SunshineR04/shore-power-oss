@@ -102,6 +102,7 @@ shore-power-system/
 ├── frontend/                 Vue 3 前端
 │   ├── src/
 │   │   ├── api/              接口封装
+│   │   ├── components/       公共组件（PageHeader/StatusTag）
 │   │   ├── composables/      组合式函数
 │   │   ├── layout/           布局组件
 │   │   ├── router/           路由（含 RBAC 守卫）
@@ -156,14 +157,15 @@ cd backend
 ```
 
 - 端口：8088
-- Swagger UI：http://localhost:8088/swagger-ui.html
+- Swagger UI：http://localhost:8088/swagger-ui/index.html
+- OpenAPI JSON：http://localhost:8088/v3/api-docs
 - 健康检查：http://localhost:8088/actuator/health
 
 ### 4. 启动前端
 
 ```bash
 cd frontend
-npm install
+npm ci        # 按 package-lock.json 安装（首次使用 npm install 亦可）
 npm run dev
 ```
 
@@ -199,7 +201,7 @@ cd frontend && npm test
 
 CI（GitHub Actions，见 `.github/workflows/ci.yml`）会执行：
 
-- 后端：Java 21 + MySQL 8 集成环境下的 `mvn verify`
+- 后端：`mvn -B verify`（Mockito 单元测试；CI 额外提供 MySQL 8 服务以覆盖 Flyway 迁移的启动验证）
 - 前端：`npm ci` → `typecheck` → `test` → `build` → `npm audit`（高危及以上失败）
 
 ## 模拟器与模拟数据说明
@@ -236,11 +238,13 @@ CI（GitHub Actions，见 `.github/workflows/ci.yml`）会执行：
 | V5 | 天气配置 |
 | V6 | 支付订单 |
 | V7 | 唯一索引（防并发注册） |
+| V8 | 安全约束（JWT 密钥校验、登录限流、账号安全列） |
+| V9 | 种子账号修复（统一演示密码 123456、补充运维账号 op1） |
 
 ## API 文档
 
 启动后端后访问：
-- Swagger UI：http://localhost:8088/swagger-ui.html
+- Swagger UI：http://localhost:8088/swagger-ui/index.html
 - OpenAPI JSON：http://localhost:8088/v3/api-docs
 
 ## 作者
