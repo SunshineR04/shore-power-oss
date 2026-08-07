@@ -99,6 +99,8 @@ const handleVisible = ref(false)
 const handleForm = reactive({ id: null, status: 'RESOLVED', remark: '' })
 let stompClient = null
 let alarmPollTimer = null
+// 组件已卸载标志：stompClient.deactivate() 异步，卸载后 onDisconnect 不得重建轮询
+let destroyed = false
 
 const levelMap = { INFO: '提示', WARNING: '警告', CRITICAL: '严重' }
 const levelType = { INFO: 'primary', WARNING: 'warning', CRITICAL: 'danger' }
@@ -112,11 +114,13 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  destroyed = true
   stompClient?.deactivate()
   if (alarmPollTimer) clearInterval(alarmPollTimer)
 })
 
 function startAlarmPolling() {
+  if (destroyed) return // 组件已卸载：WS 异步断开回调不得重建轮询（避免退出登录后 401 刷屏）
   // 幂等：已有轮询则先清理，避免 WS 抖动时定时器叠加
   if (alarmPollTimer) { clearInterval(alarmPollTimer); alarmPollTimer = null }
   alarmPollTimer = setInterval(() => loadPage(), 15000)

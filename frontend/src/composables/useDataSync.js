@@ -29,6 +29,8 @@ import SockJS from 'sockjs-client'
 
 // STOMP 客户端实例（模块级单例，所有调用 useDataSync 的组件共享一个连接）
 let client = null
+// 组件已卸载标志：client.deactivate() 异步，卸载后 onDisconnect 不得重建轮询
+let destroyed = false
 // 响应式刷新键：每次自增，组件 watch 此值触发数据重新拉取
 const refreshKey = ref(0)
 
@@ -45,7 +47,7 @@ export function useDataSync() {
    * JWT 通过 STOMP CONNECT 帧的 Authorization 头传递
    */
   function startClient() {
-    if (client) return                    // 防止重复创建
+    if (destroyed || client) return    // 组件已卸载或已存在连接，防止重复创建
     const token = sessionStorage.getItem('token')
     if (!token) return                     // 未登录不连接
     client = new Client({
@@ -83,6 +85,7 @@ export function useDataSync() {
    * WebSocket 恢复时（onConnect）自动清除轮询
    */
   function startPolling() {
+    if (destroyed || !sessionStorage.getItem('token')) return // 已卸载或已退出登录，不重建轮询
     if (pollTimer) return                  // 防止重复启动
     pollTimer = setInterval(() => { refreshKey.value++ }, 10000)
   }
@@ -94,9 +97,9 @@ export function useDataSync() {
   }
 
   // 组件挂载时同时启动 WebSocket 和轮询（WS 成功连上后轮询自动关闭）
-  onMounted(() => { startClient(); startPolling() })
-  // 组件卸载时清理
-  onUnmounted(() => stopClient())
+  onMounted(() => { destroyed = false; startClient(); startPolling() })
+  // 组件卸载时清理（置 destroyed 防止异步 deactivate 回调重建轮询）
+  onUnmounted(() => { destroyed = true; stopClient() })
 
   return { refreshKey }
 }

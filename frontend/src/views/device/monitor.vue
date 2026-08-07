@@ -187,6 +187,9 @@ let statusPollTimer = null
 let wsSilentTimer = null
 let wsReconnectTimer = null
 let pollingInterval = 3000
+// 组件已卸载标志：stompClient.deactivate() 是异步的，卸载后其 onDisconnect/onStompError
+// 回调仍可能触发并重建轮询定时器（导致退出登录后无 token 的 401 轮询刷屏），用此标志拦截
+let destroyed = false
 
 async function loadPollingConfig() {
   try {
@@ -274,7 +277,7 @@ async function pollTrend() {
 }
 
 function startPolling() {
-  if (pollTimer) return // 幂等：已有轮询则不重复启动（避免断线重连叠加定时器）
+  if (destroyed || pollTimer) return // 幂等：已有轮询则不重复启动（避免断线重连叠加定时器）
   pollLatestData()
   pollDeviceStatus()
   pollTrend()
@@ -283,7 +286,7 @@ function startPolling() {
 }
 
 function startStatusPolling() {
-  if (statusPollTimer) return // 幂等
+  if (destroyed || statusPollTimer) return // 幂等
   pollDeviceStatus()
   statusPollTimer = setInterval(pollDeviceStatus, 10000)
 }
@@ -557,6 +560,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  destroyed = true
   stopPolling()
   Object.values(gaugeCharts).forEach(c => c?.dispose())
   trendChartInstance?.dispose()
