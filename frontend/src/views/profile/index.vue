@@ -18,8 +18,8 @@
                 {{ userInfo.realName?.[0] || 'U' }}
               </el-avatar>
               <div class="avatar-name">{{ userInfo.realName || userInfo.username }}</div>
-              <el-tag :type="userInfo.role === 'ADMIN' ? 'danger' : ''" effect="plain" class="avatar-role-tag">
-                {{ userInfo.role === 'ADMIN' ? '管理员' : '普通用户' }}
+              <el-tag :type="roleMeta(userInfo.role).type" effect="plain" class="avatar-role-tag">
+                {{ roleMeta(userInfo.role).label }}
               </el-tag>
             </div>
             <div class="avatar-actions">
@@ -52,8 +52,8 @@
               <el-input :model-value="userInfo.username" disabled />
             </el-form-item>
             <el-form-item label="角色">
-              <el-tag :type="userInfo.role === 'ADMIN' ? 'danger' : 'primary'" size="small">
-                {{ userInfo.role === 'ADMIN' ? '管理员' : '普通用户' }}
+              <el-tag :type="roleMeta(userInfo.role).type" size="small">
+                {{ roleMeta(userInfo.role).label }}
               </el-tag>
             </el-form-item>
             <el-form-item label="真实姓名" prop="realName">
@@ -103,6 +103,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { userApi } from '../../api'
 import { useUserStore } from '../../store/user'
+import { roleMeta } from '../../utils/status'
 
 const store = useUserStore()
 const userInfo = computed(() => store.userInfo)

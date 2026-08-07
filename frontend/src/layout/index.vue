@@ -108,8 +108,8 @@
               </el-avatar>
               <div class="user-detail">
                 <span class="user-name">{{ store.userInfo.realName || store.userInfo.username }}</span>
-                <el-tag size="small" :type="store.isSuperAdmin() ? 'danger' : store.isOperator() ? 'warning' : 'info'" effect="plain" class="user-role-tag">
-                  {{ store.isSuperAdmin() ? '管理员' : store.isOperator() ? '运维人员' : '普通用户' }}
+                <el-tag size="small" :type="roleMeta(store.userInfo.role).type" effect="plain" class="user-role-tag">
+                  {{ roleMeta(store.userInfo.role).label }}
                 </el-tag>
               </div>
               <el-icon :size="14" color="var(--text-muted)"><ArrowDown /></el-icon>
@@ -137,6 +137,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '../store/user'
 import { alarmApi, userApi } from '../api'
 import request from '../utils/request'
+import { roleMeta } from '../utils/status'
 
 const store = useUserStore()
 const router = useRouter()

@@ -41,6 +41,18 @@ export const RESERVATION_STATUS = {
   CANCELLED:       { label: '已取消', type: 'info',    dot: '#94a3b8' }
 }
 
+/** 用户角色：key → { label 文案, type el-tag 类型 }（全站角色展示统一入口） */
+export const ROLE_STATUS = {
+  ADMIN:    { label: '管理员',   type: 'danger' },
+  OPERATOR: { label: '运维人员', type: 'warning' },
+  USER:     { label: '普通用户', type: 'primary' }
+}
+
+/** 取角色元信息，未知角色兜底为普通用户 */
+export function roleMeta(role) {
+  return ROLE_STATUS[role] || ROLE_STATUS.USER
+}
+
 /** 取状态元信息，未知状态兜底为 info 灰 */
 export function statusMeta(map, key) {
   return (key && map[key]) || { label: key || '未知', type: 'info', dot: '#94a3b8' }

@@ -41,7 +41,7 @@
         <el-table-column prop="email" label="邮箱" min-width="160" />
         <el-table-column prop="role" label="角色" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.role === 'ADMIN' ? 'danger' : row.role === 'OPERATOR' ? 'warning' : 'primary'" size="small">{{ row.role === 'ADMIN' ? '管理员' : row.role === 'OPERATOR' ? '运维人员' : '普通用户' }}</el-tag>
+            <el-tag :type="roleMeta(row.role).type" size="small">{{ roleMeta(row.role).label }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" width="80">
@@ -99,6 +99,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { userApi } from '../../api'
+import { roleMeta } from '../../utils/status'
 
 const tableData = ref([])
 const total = ref(0)
